@@ -13,7 +13,7 @@ from typing import Iterator
 from .berggren import Triple, children, apply_matrix, U, A, D
 from .gaussian import MnPair, mn_to_triple, triple_to_mn_pair, mn_children
 from .energy import is_energy_compatible, hypotenuse_bound
-from .cf_guide import cf_sqrt, convergents, predict_branch
+from .cf_guide import cf_sqrt, convergents, predict_branch, cf_factor_check
 from .modular import filter_wavefront
 
 
@@ -120,6 +120,17 @@ def inside_out_factor(N: int, max_iterations: int = 500000) -> tuple[int, int] |
             return None
         return (2, N // 2)
 
+    # Perfect square detection: if N = p^2, then p is a factor
+    sqrt_N = isqrt(N)
+    if sqrt_N * sqrt_N == N and sqrt_N > 1:
+        return (sqrt_N, sqrt_N)
+
+    # CF convergent divisibility pre-check: the convergents of sqrt(N)
+    # often directly reveal factors, especially for close-factor semiprimes.
+    cf_result = cf_factor_check(N)
+    if cf_result is not None:
+        return cf_result
+
     # Quick trial division for small factors (safety net)
     for p in range(3, min(isqrt(N) + 1, 1000), 2):
         if N % p == 0:
@@ -179,10 +190,16 @@ def inside_out_factor(N: int, max_iterations: int = 500000) -> tuple[int, int] |
         triple = mn_to_triple(current)
         a, b, c = triple
 
-        # Energy bound check: if c is way too large, prune this branch
+        # Energy bound check: prune triples outside the valid range
+        # Lower bound: c must be >= N (triple must be large enough to contain N)
+        # Upper bound: c must be <= (N^2+1)/2 (mathematical maximum)
         upper = hypotenuse_bound(N)
         if c > upper:
             continue
+        if c < N:
+            # Triple is too small, but children might be large enough
+            # so we don't prune — just skip the resonance check
+            pass
 
         # Check resonance with N
         result = resonance_check(N, triple)

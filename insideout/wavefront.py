@@ -15,6 +15,7 @@ from .berggren import Triple
 from .gaussian import MnPair, mn_to_triple, mn_children
 from .energy import is_energy_compatible
 from .inside_out import resonance_check, central_well
+from .cf_guide import cf_factor_check
 
 
 def expand_wavefront(
@@ -74,8 +75,9 @@ def expand_wavefront(
             if (current.m - current.n) % 2 == 1 and gcd(current.m, current.n) == 1:
                 triple = mn_to_triple(current)
 
-                # Energy filter
-                if triple.c <= upper:
+                # Energy filter: only include triples in the valid range
+                # c must be >= N (lower bound) and <= (N^2+1)/2 (upper bound)
+                if N <= triple.c <= upper:
                     batch.append(triple)
 
             # Add children to next level
@@ -107,6 +109,16 @@ def search_wavefront(
         if N == 2:
             return None
         return (2, N // 2)
+
+    # Perfect square detection
+    sqrt_N = isqrt(N)
+    if sqrt_N * sqrt_N == N and sqrt_N > 1:
+        return (sqrt_N, sqrt_N)
+
+    # CF convergent divisibility pre-check
+    cf_result = cf_factor_check(N)
+    if cf_result is not None:
+        return cf_result
 
     for batch in expand_wavefront(N, max_batches=max_radius):
         for triple in batch:

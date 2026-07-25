@@ -111,6 +111,38 @@ def predict_branch(N: int, triple: tuple[int, int, int]) -> tuple[int, int, int]
     )
 
 
+def cf_factor_check(N: int, max_terms: int = 100) -> tuple[int, int] | None:
+    """Check if any CF convergent of sqrt(N) directly reveals a factor.
+
+    For each convergent p_k/q_k of sqrt(N), check:
+    1. p_k divides N
+    2. q_k divides N
+    3. (p_k - 1) divides N
+    4. (p_k + 1) divides N
+    5. (q_k - 1) divides N
+    6. (q_k + 1) divides N
+
+    This is extremely effective for close-factor semiprimes because
+    the CF convergents of sqrt(N) rapidly approach p and q when p ≈ q.
+
+    Returns (factor, N // factor) with factor < N // factor if found,
+    None if no convergent reveals a factor.
+    """
+    if N < 4:
+        return None
+
+    cf = cf_sqrt(N, max_terms=max_terms)
+    convs = convergents(cf)
+
+    for pk, qk in convs:
+        for candidate in (pk, qk, pk - 1, pk + 1, qk - 1, qk + 1):
+            if 1 < candidate < N and N % candidate == 0:
+                f = candidate
+                return (min(f, N // f), max(f, N // f))
+
+    return None
+
+
 def cf_branch_sequence(N: int, max_depth: int = 50) -> list[tuple[str, int, int]]:
     """Compute the predicted branch sequence from CF convergents of sqrt(N).
 

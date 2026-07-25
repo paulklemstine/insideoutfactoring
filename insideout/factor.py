@@ -10,6 +10,7 @@ from math import isqrt
 
 from .inside_out import inside_out_factor
 from .wavefront import search_wavefront
+from .cf_guide import cf_factor_check
 
 
 def factor(N: int) -> tuple[int, int] | None:
@@ -40,6 +41,18 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if N == 2:
             return None
         return ((2, N // 2), "trial_division")
+
+    # Perfect square detection
+    sqrt_N = isqrt(N)
+    if sqrt_N * sqrt_N == N and sqrt_N > 1:
+        return ((sqrt_N, sqrt_N), "perfect_square")
+
+    # CF convergent divisibility pre-check
+    cf_result = cf_factor_check(N)
+    if cf_result is not None:
+        p, q = cf_result
+        if p * q == N and p > 1 and q > 1:
+            return ((min(p, q), max(p, q)), "cf_precheck")
 
     # Strategy 1: Inside-Out (BFS from energy well)
     result = inside_out_factor(N, max_iterations=50000)

@@ -66,7 +66,7 @@ class TestFactorWithMethod:
         assert result is not None
         factors, method = result
         assert factors[0] * factors[1] == 15
-        assert method in ("inside_out", "wavefront", "trial_division")
+        assert method in ("inside_out", "wavefront", "trial_division", "perfect_square", "cf_precheck")
 
     def test_even_returns_trial_division(self):
         result = factor_with_method(6)
@@ -84,8 +84,8 @@ class TestFactorWithMethod:
             assert factor_with_method(N) is None, f"factor_with_method({N}) should be None"
 
     def test_method_is_valid_string(self):
-        """Method name must be one of the three known strategies."""
-        valid = {"inside_out", "wavefront", "trial_division"}
+        """Method name must be one of the known strategies."""
+        valid = {"inside_out", "wavefront", "trial_division", "perfect_square", "cf_precheck"}
         result = factor_with_method(21)
         assert result is not None
         _, method = result
