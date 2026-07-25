@@ -236,5 +236,5 @@ class TestFactorIntegration:
 def valid_methods_list():
     return [
         "perfect_square", "cf_precheck", "brahmagupta", "fermat",
-        "fibonacci", "inside_out", "wavefront", "trial_division",
+        "fibonacci", "resonance_cascade", "inside_out", "wavefront", "trial_division",
     ]

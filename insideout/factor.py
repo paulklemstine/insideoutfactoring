@@ -9,9 +9,10 @@ Tries multiple strategies in order of expected speed:
 4. Brahmagupta-Fibonacci two-square method (for N ≡ 1 mod 4)
 5. Fermat difference-of-squares (for close factors)
 6. Fibonacci GCD factorization
-7. Inside-Out (CF-steered best-first search + BFS)
-8. Wavefront search
-9. Full trial division
+7. Resonance Cascade (CF-convergent resonance + Möbius descent + squaring conductance)
+8. Inside-Out (CF-steered best-first search + BFS)
+9. Wavefront search
+10. Full trial division
 """
 from __future__ import annotations
 
@@ -22,6 +23,7 @@ from .wavefront import search_wavefront
 from .cf_guide import cf_factor_check
 from .brahmagupta import brahmagupta_fibonacci_factor, fermat_difference_of_squares
 from .fibonacci_factor import fibonacci_gcd_factor, pisano_factor
+from .resonance_cascade import resonance_cascade_factor
 
 
 def factor(N: int) -> tuple[int, int] | None:
@@ -42,8 +44,8 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
     """Factor N and return the factors along with the method used.
 
     Method name is one of: "perfect_square", "cf_precheck",
-    "brahmagupta", "fermat", "fibonacci", "inside_out",
-    "wavefront", "trial_division".
+    "brahmagupta", "fermat", "fibonacci", "resonance_cascade",
+    "inside_out", "wavefront", "trial_division".
     """
     if N < 4:
         return None
@@ -94,6 +96,14 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         p, q = fib_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "fibonacci")
+
+    # Strategy: Resonance Cascade Factoring
+    # Combines CF-convergent resonance, Möbius descent, and squaring conductance
+    rc_result = resonance_cascade_factor(N)
+    if rc_result is not None:
+        p, q = rc_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "resonance_cascade")
 
     # Strategy: Inside-Out (CF-steered best-first search + BFS)
     result = inside_out_factor(N, max_iterations=50000)
