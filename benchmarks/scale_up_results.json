@@ -1,0 +1,2738 @@
+[
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0022040039766579866,
+    "timed_out": false,
+    "factors": [
+      257,
+      257
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 66049,
+    "p": 257,
+    "q": 257,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.000490996171720326,
+    "timed_out": false,
+    "factors": [
+      359,
+      359
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 128881,
+    "p": 359,
+    "q": 359,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0003299937816336751,
+    "timed_out": false,
+    "factors": [
+      457,
+      457
+    ],
+    "bits": 16,
+    "actual_bits": 18,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 208849,
+    "p": 457,
+    "q": 457,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00021999585442245007,
+    "timed_out": false,
+    "factors": [
+      557,
+      557
+    ],
+    "bits": 16,
+    "actual_bits": 19,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 310249,
+    "p": 557,
+    "q": 557,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.000200001522898674,
+    "timed_out": false,
+    "factors": [
+      659,
+      659
+    ],
+    "bits": 16,
+    "actual_bits": 19,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 434281,
+    "p": 659,
+    "q": 659,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 2.81830299354624,
+    "timed_out": false,
+    "factors": [
+      257,
+      263
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "close",
+    "sample": 1,
+    "N": 67591,
+    "p": 257,
+    "q": 263,
+    "ratio_q_over_p": 1.0233
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 4.461310003534891,
+    "timed_out": false,
+    "factors": [
+      359,
+      367
+    ],
+    "bits": 16,
+    "actual_bits": 18,
+    "category": "close",
+    "sample": 2,
+    "N": 131753,
+    "p": 359,
+    "q": 367,
+    "ratio_q_over_p": 1.0223
+  },
+  {
+    "success": true,
+    "strategy": "cf_precheck",
+    "time_ms": 0.05356999463401735,
+    "timed_out": false,
+    "factors": [
+      457,
+      461
+    ],
+    "bits": 16,
+    "actual_bits": 18,
+    "category": "close",
+    "sample": 3,
+    "N": 210677,
+    "p": 457,
+    "q": 461,
+    "ratio_q_over_p": 1.0088
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 9.409304009750485,
+    "timed_out": false,
+    "factors": [
+      557,
+      563
+    ],
+    "bits": 16,
+    "actual_bits": 19,
+    "category": "close",
+    "sample": 4,
+    "N": 313591,
+    "p": 557,
+    "q": 563,
+    "ratio_q_over_p": 1.0108
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 7.648949002032168,
+    "timed_out": false,
+    "factors": [
+      659,
+      673
+    ],
+    "bits": 16,
+    "actual_bits": 19,
+    "category": "close",
+    "sample": 5,
+    "N": 443507,
+    "p": 659,
+    "q": 673,
+    "ratio_q_over_p": 1.0212
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 2.8185730043333024,
+    "timed_out": false,
+    "factors": [
+      257,
+      283
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "moderate",
+    "sample": 1,
+    "N": 72731,
+    "p": 257,
+    "q": 283,
+    "ratio_q_over_p": 1.1012
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 17.395381000824273,
+    "timed_out": false,
+    "factors": [
+      1259,
+      1423
+    ],
+    "bits": 16,
+    "actual_bits": 21,
+    "category": "moderate",
+    "sample": 2,
+    "N": 1791557,
+    "p": 1259,
+    "q": 1423,
+    "ratio_q_over_p": 1.1303
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 37.957262989948504,
+    "timed_out": false,
+    "factors": [
+      2267,
+      2579
+    ],
+    "bits": 16,
+    "actual_bits": 23,
+    "category": "moderate",
+    "sample": 3,
+    "N": 5846593,
+    "p": 2267,
+    "q": 2579,
+    "ratio_q_over_p": 1.1376
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 60.355348003213294,
+    "timed_out": false,
+    "factors": [
+      3257,
+      3697
+    ],
+    "bits": 16,
+    "actual_bits": 24,
+    "category": "moderate",
+    "sample": 4,
+    "N": 12041129,
+    "p": 3257,
+    "q": 3697,
+    "ratio_q_over_p": 1.1351
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 72.94697400357109,
+    "timed_out": false,
+    "factors": [
+      4259,
+      4861
+    ],
+    "bits": 16,
+    "actual_bits": 25,
+    "category": "moderate",
+    "sample": 5,
+    "N": 20702999,
+    "p": 4259,
+    "q": 4861,
+    "ratio_q_over_p": 1.1413
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.8329900010721758,
+    "timed_out": false,
+    "factors": [
+      17,
+      4099
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "wide",
+    "sample": 1,
+    "N": 69683,
+    "p": 17,
+    "q": 4099,
+    "ratio_q_over_p": 241.1176
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.8824719989206642,
+    "timed_out": false,
+    "factors": [
+      29,
+      4111
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "wide",
+    "sample": 2,
+    "N": 119219,
+    "p": 29,
+    "q": 4111,
+    "ratio_q_over_p": 141.7586
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.6432569934986532,
+    "timed_out": false,
+    "factors": [
+      31,
+      4127
+    ],
+    "bits": 16,
+    "actual_bits": 17,
+    "category": "wide",
+    "sample": 3,
+    "N": 127937,
+    "p": 31,
+    "q": 4127,
+    "ratio_q_over_p": 133.129
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.7989549922058359,
+    "timed_out": false,
+    "factors": [
+      41,
+      4139
+    ],
+    "bits": 16,
+    "actual_bits": 18,
+    "category": "wide",
+    "sample": 4,
+    "N": 169699,
+    "p": 41,
+    "q": 4139,
+    "ratio_q_over_p": 100.9512
+  },
+  {
+    "success": true,
+    "strategy": "cf_precheck",
+    "time_ms": 0.07622200064361095,
+    "timed_out": false,
+    "factors": [
+      47,
+      4153
+    ],
+    "bits": 16,
+    "actual_bits": 18,
+    "category": "wide",
+    "sample": 5,
+    "N": 195191,
+    "p": 47,
+    "q": 4153,
+    "ratio_q_over_p": 88.3617
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00046100467443466187,
+    "timed_out": false,
+    "factors": [
+      4099,
+      4099
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 16801801,
+    "p": 4099,
+    "q": 4099,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00026999623514711857,
+    "timed_out": false,
+    "factors": [
+      4201,
+      4201
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 17648401,
+    "p": 4201,
+    "q": 4201,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00019099388737231493,
+    "timed_out": false,
+    "factors": [
+      4297,
+      4297
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 18464209,
+    "p": 4297,
+    "q": 4297,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00021999585442245007,
+    "timed_out": false,
+    "factors": [
+      4397,
+      4397
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 19333609,
+    "p": 4397,
+    "q": 4397,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00021100277081131935,
+    "timed_out": false,
+    "factors": [
+      4507,
+      4507
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 20313049,
+    "p": 4507,
+    "q": 4507,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 64.90625599690247,
+    "timed_out": false,
+    "factors": [
+      4099,
+      4111
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "close",
+    "sample": 1,
+    "N": 16850989,
+    "p": 4099,
+    "q": 4111,
+    "ratio_q_over_p": 1.0029
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 71.37104999856092,
+    "timed_out": false,
+    "factors": [
+      4201,
+      4211
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "close",
+    "sample": 2,
+    "N": 17690411,
+    "p": 4201,
+    "q": 4211,
+    "ratio_q_over_p": 1.0024
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 69.22295699769165,
+    "timed_out": false,
+    "factors": [
+      4297,
+      4327
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "close",
+    "sample": 3,
+    "N": 18593119,
+    "p": 4297,
+    "q": 4327,
+    "ratio_q_over_p": 1.007
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 93.43641900341026,
+    "timed_out": false,
+    "factors": [
+      4397,
+      4409
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "close",
+    "sample": 4,
+    "N": 19386373,
+    "p": 4397,
+    "q": 4409,
+    "ratio_q_over_p": 1.0027
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 93.16720899369102,
+    "timed_out": false,
+    "factors": [
+      4507,
+      4513
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "close",
+    "sample": 5,
+    "N": 20340091,
+    "p": 4507,
+    "q": 4513,
+    "ratio_q_over_p": 1.0013
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 68.56934000097681,
+    "timed_out": false,
+    "factors": [
+      4099,
+      4513
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "moderate",
+    "sample": 1,
+    "N": 18498787,
+    "p": 4099,
+    "q": 4513,
+    "ratio_q_over_p": 1.101
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 92.16527600074187,
+    "timed_out": false,
+    "factors": [
+      5099,
+      5647
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "moderate",
+    "sample": 2,
+    "N": 28794053,
+    "p": 5099,
+    "q": 5647,
+    "ratio_q_over_p": 1.1075
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 117.26707800698932,
+    "timed_out": false,
+    "factors": [
+      6101,
+      6791
+    ],
+    "bits": 24,
+    "actual_bits": 26,
+    "category": "moderate",
+    "sample": 3,
+    "N": 41431891,
+    "p": 6101,
+    "q": 6791,
+    "ratio_q_over_p": 1.1131
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 162.00320899952203,
+    "timed_out": false,
+    "factors": [
+      7103,
+      7927
+    ],
+    "bits": 24,
+    "actual_bits": 26,
+    "category": "moderate",
+    "sample": 4,
+    "N": 56305481,
+    "p": 7103,
+    "q": 7927,
+    "ratio_q_over_p": 1.116
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 150.33592999679968,
+    "timed_out": false,
+    "factors": [
+      8101,
+      9067
+    ],
+    "bits": 24,
+    "actual_bits": 27,
+    "category": "moderate",
+    "sample": 5,
+    "N": 73451767,
+    "p": 8101,
+    "q": 9067,
+    "ratio_q_over_p": 1.1192
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.6147600070107728,
+    "timed_out": false,
+    "factors": [
+      17,
+      1048583
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "wide",
+    "sample": 1,
+    "N": 17825911,
+    "p": 17,
+    "q": 1048583,
+    "ratio_q_over_p": 61681.3529
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.745757992262952,
+    "timed_out": false,
+    "factors": [
+      29,
+      1048601
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "wide",
+    "sample": 2,
+    "N": 30409429,
+    "p": 29,
+    "q": 1048601,
+    "ratio_q_over_p": 36158.6552
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.6758910021744668,
+    "timed_out": false,
+    "factors": [
+      31,
+      1048609
+    ],
+    "bits": 24,
+    "actual_bits": 25,
+    "category": "wide",
+    "sample": 3,
+    "N": 32506879,
+    "p": 31,
+    "q": 1048609,
+    "ratio_q_over_p": 33826.0968
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.9125119977397844,
+    "timed_out": false,
+    "factors": [
+      41,
+      1048627
+    ],
+    "bits": 24,
+    "actual_bits": 26,
+    "category": "wide",
+    "sample": 4,
+    "N": 42993707,
+    "p": 41,
+    "q": 1048627,
+    "ratio_q_over_p": 25576.2683
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.9173799917334691,
+    "timed_out": false,
+    "factors": [
+      47,
+      1048633
+    ],
+    "bits": 24,
+    "actual_bits": 26,
+    "category": "wide",
+    "sample": 5,
+    "N": 49285751,
+    "p": 47,
+    "q": 1048633,
+    "ratio_q_over_p": 22311.3404
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0008540082490071654,
+    "timed_out": false,
+    "factors": [
+      65537,
+      65537
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 4295098369,
+    "p": 65537,
+    "q": 65537,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00037299469113349915,
+    "timed_out": false,
+    "factors": [
+      65647,
+      65647
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 4309528609,
+    "p": 65647,
+    "q": 65647,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00019599974621087313,
+    "timed_out": false,
+    "factors": [
+      65761,
+      65761
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 4324509121,
+    "p": 65761,
+    "q": 65761,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00015700061339884996,
+    "timed_out": false,
+    "factors": [
+      65837,
+      65837
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 4334510569,
+    "p": 65837,
+    "q": 65837,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00014799297787249088,
+    "timed_out": false,
+    "factors": [
+      65951,
+      65951
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 4349534401,
+    "p": 65951,
+    "q": 65951,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1823.159316991223,
+    "timed_out": false,
+    "factors": [
+      65537,
+      65543
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "close",
+    "sample": 1,
+    "N": 4295491591,
+    "p": 65537,
+    "q": 65543,
+    "ratio_q_over_p": 1.0001
+  },
+  {
+    "success": true,
+    "strategy": "cf_precheck",
+    "time_ms": 0.06255399785004556,
+    "timed_out": false,
+    "factors": [
+      65647,
+      65651
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "close",
+    "sample": 2,
+    "N": 4309791197,
+    "p": 65647,
+    "q": 65651,
+    "ratio_q_over_p": 1.0001
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1953.569391000201,
+    "timed_out": false,
+    "factors": [
+      65761,
+      65777
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "close",
+    "sample": 3,
+    "N": 4325561297,
+    "p": 65761,
+    "q": 65777,
+    "ratio_q_over_p": 1.0002
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1888.6380929907318,
+    "timed_out": false,
+    "factors": [
+      65837,
+      65843
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "close",
+    "sample": 4,
+    "N": 4334905591,
+    "p": 65837,
+    "q": 65843,
+    "ratio_q_over_p": 1.0001
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 2158.8345499912975,
+    "timed_out": false,
+    "factors": [
+      65951,
+      65957
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "close",
+    "sample": 5,
+    "N": 4349930107,
+    "p": 65951,
+    "q": 65957,
+    "ratio_q_over_p": 1.0001
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1965.860217998852,
+    "timed_out": false,
+    "factors": [
+      65537,
+      72091
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "moderate",
+    "sample": 1,
+    "N": 4724627867,
+    "p": 65537,
+    "q": 72091,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1968.8450489920797,
+    "timed_out": false,
+    "factors": [
+      66541,
+      73237
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "moderate",
+    "sample": 2,
+    "N": 4873263217,
+    "p": 66541,
+    "q": 73237,
+    "ratio_q_over_p": 1.1006
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1940.7017789926613,
+    "timed_out": false,
+    "factors": [
+      67537,
+      74377
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "moderate",
+    "sample": 3,
+    "N": 5023199449,
+    "p": 67537,
+    "q": 74377,
+    "ratio_q_over_p": 1.1013
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 2074.1743800026597,
+    "timed_out": false,
+    "factors": [
+      68539,
+      75511
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "moderate",
+    "sample": 4,
+    "N": 5175448429,
+    "p": 68539,
+    "q": 75511,
+    "ratio_q_over_p": 1.1017
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 2077.7138249977725,
+    "timed_out": false,
+    "factors": [
+      69539,
+      76649
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "moderate",
+    "sample": 5,
+    "N": 5330094811,
+    "p": 69539,
+    "q": 76649,
+    "ratio_q_over_p": 1.1022
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.8533179934602231,
+    "timed_out": false,
+    "factors": [
+      37,
+      134217757
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "wide",
+    "sample": 1,
+    "N": 4966057009,
+    "p": 37,
+    "q": 134217757,
+    "ratio_q_over_p": 3627506.9459
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.8829409925965592,
+    "timed_out": false,
+    "factors": [
+      41,
+      134217757
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "wide",
+    "sample": 2,
+    "N": 5502928037,
+    "p": 41,
+    "q": 134217757,
+    "ratio_q_over_p": 3273603.8293
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.9335820068372414,
+    "timed_out": false,
+    "factors": [
+      47,
+      134217757
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "wide",
+    "sample": 3,
+    "N": 6308234579,
+    "p": 47,
+    "q": 134217757,
+    "ratio_q_over_p": 2855696.9574
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 0.9787710005184636,
+    "timed_out": false,
+    "factors": [
+      59,
+      134217773
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "wide",
+    "sample": 4,
+    "N": 7918848607,
+    "p": 59,
+    "q": 134217773,
+    "ratio_q_over_p": 2274877.5085
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1.1787630064645782,
+    "timed_out": false,
+    "factors": [
+      61,
+      134217781
+    ],
+    "bits": 32,
+    "actual_bits": 33,
+    "category": "wide",
+    "sample": 5,
+    "N": 8187284641,
+    "p": 61,
+    "q": 134217781,
+    "ratio_q_over_p": 2200291.4918
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004818997695110738,
+    "timed_out": false,
+    "factors": [
+      1048583,
+      1048583
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 1099526307889,
+    "p": 1048583,
+    "q": 1048583,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0023850006982684135,
+    "timed_out": false,
+    "factors": [
+      1048681,
+      1048681
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 1099731839761,
+    "p": 1048681,
+    "q": 1048681,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0030369992600753903,
+    "timed_out": false,
+    "factors": [
+      1048783,
+      1048783
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 1099945781089,
+    "p": 1048783,
+    "q": 1048783,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0026380002964287996,
+    "timed_out": false,
+    "factors": [
+      1048877,
+      1048877
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 1100142961129,
+    "p": 1048877,
+    "q": 1048877,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004399989848025143,
+    "timed_out": false,
+    "factors": [
+      1048991,
+      1048991
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 1100382118081,
+    "p": 1048991,
+    "q": 1048991,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "close",
+    "sample": 1,
+    "N": 1099532599387,
+    "p": 1048583,
+    "q": 1048589,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "close",
+    "sample": 2,
+    "N": 1099754910743,
+    "p": 1048681,
+    "q": 1048703,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "close",
+    "sample": 3,
+    "N": 1099956268919,
+    "p": 1048783,
+    "q": 1048793,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "close",
+    "sample": 4,
+    "N": 1100155547653,
+    "p": 1048877,
+    "q": 1048889,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "close",
+    "sample": 5,
+    "N": 1100403097901,
+    "p": 1048991,
+    "q": 1049011,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "moderate",
+    "sample": 1,
+    "N": 1209495401431,
+    "p": 1048583,
+    "q": 1153457,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "moderate",
+    "sample": 2,
+    "N": 1211870154197,
+    "p": 1049599,
+    "q": 1154603,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "moderate",
+    "sample": 3,
+    "N": 1214204999669,
+    "p": 1050593,
+    "q": 1155733,
+    "ratio_q_over_p": 1.1001
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "moderate",
+    "sample": 4,
+    "N": 1216557234943,
+    "p": 1051591,
+    "q": 1156873,
+    "ratio_q_over_p": 1.1001
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "moderate",
+    "sample": 5,
+    "N": 1218960168533,
+    "p": 1052609,
+    "q": 1158037,
+    "ratio_q_over_p": 1.1002
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1.3794929982395843,
+    "timed_out": false,
+    "factors": [
+      67,
+      17179869209
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "wide",
+    "sample": 1,
+    "N": 1151051237003,
+    "p": 67,
+    "q": 17179869209,
+    "ratio_q_over_p": 256415958.3433
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1.5535749989794567,
+    "timed_out": false,
+    "factors": [
+      73,
+      17179869209
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "wide",
+    "sample": 2,
+    "N": 1254130452257,
+    "p": 73,
+    "q": 17179869209,
+    "ratio_q_over_p": 235340674.0959
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1.3909670087741688,
+    "timed_out": false,
+    "factors": [
+      79,
+      17179869263
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "wide",
+    "sample": 3,
+    "N": 1357209671777,
+    "p": 79,
+    "q": 17179869263,
+    "ratio_q_over_p": 217466699.5316
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1.781427999958396,
+    "timed_out": false,
+    "factors": [
+      89,
+      17179869263
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "wide",
+    "sample": 4,
+    "N": 1529008364407,
+    "p": 89,
+    "q": 17179869263,
+    "ratio_q_over_p": 193032238.9101
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1.629291000426747,
+    "timed_out": false,
+    "factors": [
+      97,
+      17179869263
+    ],
+    "bits": 40,
+    "actual_bits": 41,
+    "category": "wide",
+    "sample": 5,
+    "N": 1666447318511,
+    "p": 97,
+    "q": 17179869263,
+    "ratio_q_over_p": 177112054.2577
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0019900035113096237,
+    "timed_out": false,
+    "factors": [
+      16777259,
+      16777259
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 281476419553081,
+    "p": 16777259,
+    "q": 16777259,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0018540013115853071,
+    "timed_out": false,
+    "factors": [
+      16777331,
+      16777331
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 281478835483561,
+    "p": 16777331,
+    "q": 16777331,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0034090044209733605,
+    "timed_out": false,
+    "factors": [
+      16777421,
+      16777421
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 281481855411241,
+    "p": 16777421,
+    "q": 16777421,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0019799917936325073,
+    "timed_out": false,
+    "factors": [
+      16777531,
+      16777531
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 281485546455961,
+    "p": 16777531,
+    "q": 16777531,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0035449920687824488,
+    "timed_out": false,
+    "factors": [
+      16777619,
+      16777619
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 281488499309161,
+    "p": 16777619,
+    "q": 16777619,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "close",
+    "sample": 1,
+    "N": 281476922870851,
+    "p": 16777259,
+    "q": 16777289,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "close",
+    "sample": 2,
+    "N": 281478936147547,
+    "p": 16777331,
+    "q": 16777337,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "close",
+    "sample": 3,
+    "N": 281482190959661,
+    "p": 16777421,
+    "q": 16777441,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "close",
+    "sample": 4,
+    "N": 281486217557201,
+    "p": 16777531,
+    "q": 16777571,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "close",
+    "sample": 5,
+    "N": 281488734195827,
+    "p": 16777619,
+    "q": 16777633,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "moderate",
+    "sample": 1,
+    "N": 309624096740633,
+    "p": 16777259,
+    "q": 18454987,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "moderate",
+    "sample": 2,
+    "N": 309660484330657,
+    "p": 16778227,
+    "q": 18456091,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "moderate",
+    "sample": 3,
+    "N": 309698575473311,
+    "p": 16779229,
+    "q": 18457259,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "moderate",
+    "sample": 4,
+    "N": 309735658786501,
+    "p": 16780229,
+    "q": 18458369,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "moderate",
+    "sample": 5,
+    "N": 309773707564603,
+    "p": 16781243,
+    "q": 18459521,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 3.4778630069922656,
+    "timed_out": false,
+    "factors": [
+      257,
+      1099511627791
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "wide",
+    "sample": 1,
+    "N": 282574488342287,
+    "p": 257,
+    "q": 1099511627791,
+    "ratio_q_over_p": 4278255361.0545
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 5.995657993480563,
+    "timed_out": false,
+    "factors": [
+      269,
+      1099511627791
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "wide",
+    "sample": 2,
+    "N": 295768627875779,
+    "p": 269,
+    "q": 1099511627791,
+    "ratio_q_over_p": 4087403820.7844
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 3.8420110067818314,
+    "timed_out": false,
+    "factors": [
+      271,
+      1099511627803
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "wide",
+    "sample": 3,
+    "N": 297967651134613,
+    "p": 271,
+    "q": 1099511627803,
+    "ratio_q_over_p": 4057238478.9779
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 3.7951739941490814,
+    "timed_out": false,
+    "factors": [
+      281,
+      1099511627831
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "wide",
+    "sample": 4,
+    "N": 308962767420511,
+    "p": 281,
+    "q": 1099511627831,
+    "ratio_q_over_p": 3912852768.0819
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 5.241114005912095,
+    "timed_out": false,
+    "factors": [
+      293,
+      1099511627831
+    ],
+    "bits": 48,
+    "actual_bits": 49,
+    "category": "wide",
+    "sample": 5,
+    "N": 322156906954483,
+    "p": 293,
+    "q": 1099511627831,
+    "ratio_q_over_p": 3752599412.3925
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0033619871828705072,
+    "timed_out": false,
+    "factors": [
+      268435459,
+      268435459
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 72057595648540681,
+    "p": 268435459,
+    "q": 268435459,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0019309954950585961,
+    "timed_out": false,
+    "factors": [
+      268435561,
+      268435561
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 72057650409384721,
+    "p": 268435561,
+    "q": 268435561,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0029799994081258774,
+    "timed_out": false,
+    "factors": [
+      268435669,
+      268435669
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 72057708391477561,
+    "p": 268435669,
+    "q": 268435669,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.003598004695959389,
+    "timed_out": false,
+    "factors": [
+      268435757,
+      268435757
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 72057755636163049,
+    "p": 268435757,
+    "q": 268435757,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.00407799961976707,
+    "timed_out": false,
+    "factors": [
+      268435873,
+      268435873
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 72057817913272129,
+    "p": 268435873,
+    "q": 268435873,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "cf_precheck",
+    "time_ms": 0.06356100493576378,
+    "timed_out": false,
+    "factors": [
+      268435459,
+      268435463
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "close",
+    "sample": 1,
+    "N": 72057596722282517,
+    "p": 268435459,
+    "q": 268435463,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "close",
+    "sample": 2,
+    "N": 72057654704353697,
+    "p": 268435561,
+    "q": 268435577,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "close",
+    "sample": 3,
+    "N": 72057715907676293,
+    "p": 268435669,
+    "q": 268435697,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "close",
+    "sample": 4,
+    "N": 72057770668565441,
+    "p": 268435757,
+    "q": 268435813,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "close",
+    "sample": 5,
+    "N": 72057819523887367,
+    "p": 268435873,
+    "q": 268435879,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "moderate",
+    "sample": 1,
+    "N": 79263356313980131,
+    "p": 268435459,
+    "q": 295279009,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "moderate",
+    "sample": 2,
+    "N": 79263986279570921,
+    "p": 268436507,
+    "q": 295280203,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "moderate",
+    "sample": 3,
+    "N": 79264556171342417,
+    "p": 268437457,
+    "q": 295281281,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "moderate",
+    "sample": 4,
+    "N": 79265167726813763,
+    "p": 268438459,
+    "q": 295282457,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "moderate",
+    "sample": 5,
+    "N": 79265781700603019,
+    "p": 268439491,
+    "q": 295283609,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 8.437848999164999,
+    "timed_out": false,
+    "factors": [
+      521,
+      140737488355333
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "wide",
+    "sample": 1,
+    "N": 73324231433128493,
+    "p": 521,
+    "q": 140737488355333,
+    "ratio_q_over_p": 270129536190.6584
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 8.718625002074987,
+    "timed_out": false,
+    "factors": [
+      521,
+      140737488355369
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "wide",
+    "sample": 2,
+    "N": 73324231433147249,
+    "p": 521,
+    "q": 140737488355369,
+    "ratio_q_over_p": 270129536190.7274
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 10.664670000551268,
+    "timed_out": false,
+    "factors": [
+      541,
+      140737488355369
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "wide",
+    "sample": 3,
+    "N": 76138981200254629,
+    "p": 541,
+    "q": 140737488355369,
+    "ratio_q_over_p": 260143231710.4787
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 12.35566999821458,
+    "timed_out": false,
+    "factors": [
+      541,
+      140737488355369
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "wide",
+    "sample": 4,
+    "N": 76138981200254629,
+    "p": 541,
+    "q": 140737488355369,
+    "ratio_q_over_p": 260143231710.4787
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 10.871695005334914,
+    "timed_out": false,
+    "factors": [
+      541,
+      140737488355393
+    ],
+    "bits": 56,
+    "actual_bits": 57,
+    "category": "wide",
+    "sample": 5,
+    "N": 76138981200267613,
+    "p": 541,
+    "q": 140737488355393,
+    "ratio_q_over_p": 260143231710.5231
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.003924011252820492,
+    "timed_out": false,
+    "factors": [
+      4294967311,
+      4294967311
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 18446744202558570721,
+    "p": 4294967311,
+    "q": 4294967311,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004628993337973952,
+    "timed_out": false,
+    "factors": [
+      4294967459,
+      4294967459
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 18446745473868916681,
+    "p": 4294967459,
+    "q": 4294967459,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0037389982026070356,
+    "timed_out": false,
+    "factors": [
+      4294967497,
+      4294967497
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 18446745800286445009,
+    "p": 4294967497,
+    "q": 4294967497,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0031509989639744163,
+    "timed_out": false,
+    "factors": [
+      4294967597,
+      4294967597
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "perfect_square",
+    "sample": 4,
+    "N": 18446746659279954409,
+    "p": 4294967597,
+    "q": 4294967597,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004140005330555141,
+    "timed_out": false,
+    "factors": [
+      4294967701,
+      4294967701
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "perfect_square",
+    "sample": 5,
+    "N": 18446747552633225401,
+    "p": 4294967701,
+    "q": 4294967701,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "close",
+    "sample": 1,
+    "N": 18446744400127067027,
+    "p": 4294967311,
+    "q": 4294967357,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "close",
+    "sample": 2,
+    "N": 18446745551178330943,
+    "p": 4294967459,
+    "q": 4294967477,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "close",
+    "sample": 3,
+    "N": 18446745869005924961,
+    "p": 4294967497,
+    "q": 4294967513,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "close",
+    "sample": 4,
+    "N": 18446746788128982319,
+    "p": 4294967597,
+    "q": 4294967627,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "close",
+    "sample": 5,
+    "N": 18446747647122514823,
+    "p": 4294967701,
+    "q": 4294967723,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "moderate",
+    "sample": 1,
+    "N": 20291418703989309971,
+    "p": 4294967311,
+    "q": 4724464061,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "moderate",
+    "sample": 2,
+    "N": 20291428490503022861,
+    "p": 4294968317,
+    "q": 4724465233,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "moderate",
+    "sample": 3,
+    "N": 20291438017602946331,
+    "p": 4294969319,
+    "q": 4724466349,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "moderate",
+    "sample": 4,
+    "N": 20291447942419362563,
+    "p": 4294970347,
+    "q": 4724467529,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "moderate",
+    "sample": 5,
+    "N": 20291456993641021687,
+    "p": 4294971301,
+    "q": 4724468587,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 17.739793998771347,
+    "timed_out": false,
+    "factors": [
+      1031,
+      18014398509482143
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "wide",
+    "sample": 1,
+    "N": 18572844863276089433,
+    "p": 1031,
+    "q": 18014398509482143,
+    "ratio_q_over_p": 17472743462155.328
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 15.272646996891126,
+    "timed_out": false,
+    "factors": [
+      1033,
+      18014398509482143
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "wide",
+    "sample": 2,
+    "N": 18608873660295053719,
+    "p": 1033,
+    "q": 18014398509482143,
+    "ratio_q_over_p": 17438914336381.553
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 15.984685000148602,
+    "timed_out": false,
+    "factors": [
+      1039,
+      18014398509482143
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "wide",
+    "sample": 3,
+    "N": 18716960051351946577,
+    "p": 1039,
+    "q": 18014398509482143,
+    "ratio_q_over_p": 17338208382562.217
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 18.519817997002974,
+    "timed_out": false,
+    "factors": [
+      1049,
+      18014398509482143
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "wide",
+    "sample": 4,
+    "N": 18897104036446768007,
+    "p": 1049,
+    "q": 18014398509482143,
+    "ratio_q_over_p": 17172925175864.77
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 15.376922005089,
+    "timed_out": false,
+    "factors": [
+      1061,
+      18014398509482143
+    ],
+    "bits": 64,
+    "actual_bits": 65,
+    "category": "wide",
+    "sample": 5,
+    "N": 19113276818560553723,
+    "p": 1061,
+    "q": 18014398509482143,
+    "ratio_q_over_p": 16978697935421.436
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004657995305024087,
+    "timed_out": false,
+    "factors": [
+      281474976710677,
+      281474976710677
+    ],
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 79228162514276159542565798329,
+    "p": 281474976710677,
+    "q": 281474976710677,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0035279954317957163,
+    "timed_out": false,
+    "factors": [
+      281474976710891,
+      281474976710891
+    ],
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 79228162514396630832598013881,
+    "p": 281474976710891,
+    "q": 281474976710891,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0033099931897595525,
+    "timed_out": false,
+    "factors": [
+      281474976710891,
+      281474976710891
+    ],
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 79228162514396630832598013881,
+    "p": 281474976710891,
+    "q": 281474976710891,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "close",
+    "sample": 1,
+    "N": 79228162514287418541634225409,
+    "p": 281474976710677,
+    "q": 281474976710717,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "close",
+    "sample": 2,
+    "N": 79228162514398319682458279227,
+    "p": 281474976710891,
+    "q": 281474976710897,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "close",
+    "sample": 3,
+    "N": 79228162514398319682458279227,
+    "p": 281474976710891,
+    "q": 281474976710897,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "moderate",
+    "sample": 1,
+    "N": 87150978765712867138570133029,
+    "p": 281474976710677,
+    "q": 309622474381777,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "moderate",
+    "sample": 2,
+    "N": 87150978766342020006515006411,
+    "p": 281474976711689,
+    "q": 309622474382899,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "moderate",
+    "sample": 3,
+    "N": 87150978766968527009681048683,
+    "p": 281474976712667,
+    "q": 309622474384049,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1974.1938590013888,
+    "timed_out": false,
+    "factors": [
+      65537,
+      1208925819614629174706189
+    ],
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "wide",
+    "sample": 1,
+    "N": 79229371440083952222719508493,
+    "p": 65537,
+    "q": 1208925819614629174706189,
+    "ratio_q_over_p": 1.8446462603027743e+19
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1889.4592900032876,
+    "timed_out": false,
+    "factors": [
+      65551,
+      1208925819614629174706261
+    ],
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "wide",
+    "sample": 2,
+    "N": 79246296401558557031170114811,
+    "p": 65551,
+    "q": 1208925819614629174706261,
+    "ratio_q_over_p": 1.84425229152054e+19
+  },
+  {
+    "success": true,
+    "strategy": "steered",
+    "time_ms": 1921.7115700012073,
+    "timed_out": false,
+    "factors": [
+      65551,
+      1208925819614629174706261
+    ],
+    "bits": 96,
+    "actual_bits": 97,
+    "category": "wide",
+    "sample": 3,
+    "N": 79246296401558557031170114811,
+    "p": 65551,
+    "q": 1208925819614629174706261,
+    "ratio_q_over_p": 1.84425229152054e+19
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004408007953315973,
+    "timed_out": false,
+    "factors": [
+      18446744073709551629,
+      18446744073709551629
+    ],
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "perfect_square",
+    "sample": 1,
+    "N": 340282366920938463942989953348216553641,
+    "p": 18446744073709551629,
+    "q": 18446744073709551629,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.0035489938454702497,
+    "timed_out": false,
+    "factors": [
+      18446744073709551757,
+      18446744073709551757
+    ],
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "perfect_square",
+    "sample": 2,
+    "N": 340282366920938468665356436217861787049,
+    "p": 18446744073709551757,
+    "q": 18446744073709551757,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": true,
+    "strategy": "perfect_square",
+    "time_ms": 0.004257992259226739,
+    "timed_out": false,
+    "factors": [
+      18446744073709551923,
+      18446744073709551923
+    ],
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "perfect_square",
+    "sample": 3,
+    "N": 340282366920938474789675468689432997929,
+    "p": 18446744073709551923,
+    "q": 18446744073709551923,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "close",
+    "sample": 1,
+    "N": 340282366920938464385711811117245792737,
+    "p": 18446744073709551629,
+    "q": 18446744073709551653,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "close",
+    "sample": 2,
+    "N": 340282366920938471727515952453647378711,
+    "p": 18446744073709551757,
+    "q": 18446744073709551923,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "close",
+    "sample": 3,
+    "N": 340282366920938475232397326458462244081,
+    "p": 18446744073709551923,
+    "q": 18446744073709551947,
+    "ratio_q_over_p": 1.0
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "moderate",
+    "sample": 1,
+    "N": 374310603613032341532577851733260968807,
+    "p": 18446744073709551629,
+    "q": 20291418481080508483,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "moderate",
+    "sample": 2,
+    "N": 374310603613032361661664984965125383943,
+    "p": 18446744073709552621,
+    "q": 20291418481080508483,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "moderate",
+    "sample": 3,
+    "N": 374310603613032382934450250766982104153,
+    "p": 18446744073709553653,
+    "q": 20291418481080508501,
+    "ratio_q_over_p": 1.1
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "wide",
+    "sample": 1,
+    "N": 340285125328644560090552264258024899223,
+    "p": 2097169,
+    "q": 162259276829213363391578010288167,
+    "ratio_q_over_p": 7.737062527112186e+25
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "wide",
+    "sample": 2,
+    "N": 340285125328644560090552264258024899223,
+    "p": 2097169,
+    "q": 162259276829213363391578010288167,
+    "ratio_q_over_p": 7.737062527112186e+25
+  },
+  {
+    "success": false,
+    "strategy": "timeout",
+    "time_ms": 10000.0,
+    "timed_out": true,
+    "bits": 128,
+    "actual_bits": 129,
+    "category": "wide",
+    "sample": 3,
+    "N": 340285125328644560090552264258024899223,
+    "p": 2097169,
+    "q": 162259276829213363391578010288167,
+    "ratio_q_over_p": 7.737062527112186e+25
+  }
+]
