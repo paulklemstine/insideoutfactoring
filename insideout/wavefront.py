@@ -14,7 +14,7 @@ from typing import Iterator
 from .berggren import Triple
 from .gaussian import MnPair, mn_to_triple, mn_children
 from .energy import is_energy_compatible
-from .inside_out import resonance_check, central_well
+from .inside_out import resonance_check, central_well, cf_seeded_well_points
 from .cf_guide import cf_factor_check
 
 
@@ -29,26 +29,15 @@ def expand_wavefront(
     discovered at a given depth from the well. Later batches have
     higher energy (larger hypotenuse).
     """
-    well = central_well(N)
+    # Use CF-seeded well points for better starting coverage
+    seed_points = cf_seeded_well_points(N)
     visited: set[tuple[int, int]] = set()
-    queue: deque[MnPair] = deque([well])
+    queue: deque[MnPair] = deque()
 
-    # Seed the BFS with points near the well, like inside_out_factor does,
-    # to improve coverage of the Pythagorean tree.
-    m0, n0 = well.m, well.n
-    for dm in range(-5, 6):
-        for dn in range(0, min(m0, 6)):
-            m = m0 + dm
-            n = n0 + dn
-            if m > n > 0 and (m - n) % 2 == 1 and gcd(m, n) == 1:
-                pair = MnPair(m, n)
-                if (pair.m, pair.n) not in visited:
-                    queue.append(pair)
-
-    # Also include the root PPT (m=2, n=1) -> (3,4,5) for full coverage
-    root = MnPair(2, 1)
-    if (2, 1) not in visited:
-        queue.append(root)
+    for seed in seed_points:
+        key = (seed.m, seed.n)
+        if key not in visited:
+            queue.append(seed)
 
     # Upper bound on hypotenuse for energy filtering
     upper = (N * N + 1) // 2
@@ -83,7 +72,9 @@ def expand_wavefront(
             # Add children to next level
             for child in mn_children(current):
                 if child.m > child.n > 0:
-                    next_queue.append(child)
+                    child_key = (child.m, child.n)
+                    if child_key not in visited:
+                        next_queue.append(child)
 
         if batch:
             yield batch

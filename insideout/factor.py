@@ -30,8 +30,8 @@ def factor(N: int) -> tuple[int, int] | None:
 def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
     """Factor N and return the factors along with the method used.
 
-    Returns ((p, q), method_name) if N is composite, None if N is prime.
-    Method name is one of: "inside_out", "wavefront", "trial_division".
+    Method name is one of: "perfect_square", "cf_precheck", "steered",
+    "inside_out", "wavefront", "trial_division".
     """
     if N < 4:
         return None
@@ -54,7 +54,7 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and p > 1 and q > 1:
             return ((min(p, q), max(p, q)), "cf_precheck")
 
-    # Strategy 1: Inside-Out (BFS from energy well)
+    # Strategy 1: Inside-Out (steered + BFS, combined)
     result = inside_out_factor(N, max_iterations=50000)
     if result is not None:
         p, q = result
