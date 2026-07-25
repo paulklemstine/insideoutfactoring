@@ -148,46 +148,47 @@ def _mobius_descent(N: int, max_depth: int = 50) -> tuple[int, int] | None:
     return None
 
 
-def _squaring_conductance(N: int, max_iter: int = 1000) -> tuple[int, int] | None:
-    """Stage 4: Squaring conductance analysis.
+def _squaring_conductance(N: int, max_iter: int = 500) -> tuple[int, int] | None:
+    """Stage 4: CRT Bottleneck / Squaring Conductance analysis.
 
     The squaring map x → x² on Z/NZ decomposes via CRT into
-    coordinate dynamics on Z/pZ × Z/qZ. The key insight from
-    the CRT Bottleneck theorem is:
+    coordinate dynamics on Z/pZ × Z/qZ when N = pq.
+    The CRT Bottleneck theorem (CRTBottleneck.lean) states:
 
       h(N) ≤ min(h(p), h(q))
 
-    where h is the basin conductance (minimum conductance over
-    admissible cuts of the squaring graph).
-
-    We exploit this by computing the orbit structure of x → x² mod N.
-    If N = pq, the squaring orbits in Z/NZ have lengths that are
-    lcm of the orbit lengths in Z/pZ and Z/qZ. By finding a point
-    whose orbit length divides a small number, we can detect factor
-    structure.
+    where h is the basin conductance. We exploit this by finding
+    points where the squaring orbit structure differs between Z/pZ
+    and Z/qZ. Specifically:
+    - gcd(x^(2^k) - 1, N) reveals a factor when x^(2^k) ≡ 1 (mod p)
+      but x^(2^k) ≢ 1 (mod q)
+    - gcd(x² - x, N) reveals a factor when x is a fixed point of
+      squaring mod p but not mod q
 
     Returns (p, q) with p*q = N and p < q, or None.
     """
     if N < 4 or N % 2 == 0:
         return None
 
-    # Find orbits of the squaring map and check if orbit structure
-    # reveals factor information
-    # Key: if x² ≡ x (mod p) but x² ≢ x (mod q), then gcd(x² - x, N) = p
-    for x in range(2, min(N, max_iter, 500)):
+    # Strategy 1: Iterated squaring — find x where x^(2^k) ≡ 1 (mod p)
+    # but x^(2^k) ≢ 1 (mod q). This reveals gcd(x^(2^k)-1, N) = p.
+    for x in range(2, min(N, max_iter)):
+        # Compute x^(2^k) mod N for k = 0, 1, 2, ...
+        y = x
+        for _ in range(20):
+            g = gcd(y - 1, N)
+            if 1 < g < N:
+                return (min(g, N // g), max(g, N // g))
+            y = (y * y) % N
+
+    # Strategy 2: Fixed points of squaring
+    # x² ≡ x (mod p) for x ≡ 0 or 1 (mod p)
+    # So gcd(x² - x, N) may reveal a factor
+    for x in range(2, min(N, max_iter)):
         x_sq_mod = (x * x) % N
         g = gcd(x_sq_mod - x, N)
         if 1 < g < N:
             return (min(g, N // g), max(g, N // g))
-
-        # Also check: gcd(x^(2^k) - x, N) for small k
-        # This finds fixed points of iterated squaring
-        x_k = x
-        for _ in range(10):
-            x_k = (x_k * x_k) % N
-            g = gcd(x_k - x, N)
-            if 1 < g < N:
-                return (min(g, N // g), max(g, N // g))
 
     return None
 
