@@ -1,0 +1,126 @@
+"""Wavefront parallel search for Inside-Out factoring.
+
+Instead of evaluating nodes one at a time, group all nodes at increasing
+energy distance from the well into wavefronts. Each wavefront can be
+evaluated in parallel, with modular resonance filters applied to the
+entire batch before individual resonance checks.
+"""
+from __future__ import annotations
+
+from collections import deque
+from math import gcd, isqrt
+from typing import Iterator
+
+from .berggren import Triple
+from .gaussian import MnPair, mn_to_triple, mn_children
+from .energy import is_energy_compatible
+from .inside_out import resonance_check, central_well
+
+
+def expand_wavefront(
+    N: int,
+    max_batches: int = 100,
+    batch_size: int = 1000,
+) -> Iterator[list[Triple]]:
+    """Generate wavefronts of triples at increasing energy distance.
+
+    Yields lists of triples, where each list represents all triples
+    discovered at a given depth from the well. Later batches have
+    higher energy (larger hypotenuse).
+    """
+    well = central_well(N)
+    visited: set[tuple[int, int]] = set()
+    queue: deque[MnPair] = deque([well])
+
+    # Seed the BFS with points near the well, like inside_out_factor does,
+    # to improve coverage of the Pythagorean tree.
+    m0, n0 = well.m, well.n
+    for dm in range(-5, 6):
+        for dn in range(0, min(m0, 6)):
+            m = m0 + dm
+            n = n0 + dn
+            if m > n > 0 and (m - n) % 2 == 1 and gcd(m, n) == 1:
+                pair = MnPair(m, n)
+                if (pair.m, pair.n) not in visited:
+                    queue.append(pair)
+
+    # Also include the root PPT (m=2, n=1) -> (3,4,5) for full coverage
+    root = MnPair(2, 1)
+    if (2, 1) not in visited:
+        queue.append(root)
+
+    # Upper bound on hypotenuse for energy filtering
+    upper = (N * N + 1) // 2
+
+    for _ in range(max_batches):
+        batch: list[Triple] = []
+        next_queue: deque[MnPair] = deque()
+
+        # Process current level
+        processed = 0
+        while queue and processed < batch_size:
+            current = queue.popleft()
+            processed += 1
+
+            key = (current.m, current.n)
+            if key in visited:
+                continue
+            visited.add(key)
+
+            if current.m <= current.n:
+                continue
+
+            # Valid PPT parameters
+            if (current.m - current.n) % 2 == 1 and gcd(current.m, current.n) == 1:
+                triple = mn_to_triple(current)
+
+                # Energy filter
+                if triple.c <= upper:
+                    batch.append(triple)
+
+            # Add children to next level
+            for child in mn_children(current):
+                if child.m > child.n > 0:
+                    next_queue.append(child)
+
+        if batch:
+            yield batch
+
+        queue = next_queue
+        if not queue:
+            break
+
+
+def search_wavefront(
+    N: int,
+    max_radius: int = 1000,
+) -> tuple[int, int] | None:
+    """Factor N using wavefront search.
+
+    Expands wavefronts from the energy well, checking each triple
+    for resonance with N.
+    """
+    if N < 4:
+        return None
+
+    if N % 2 == 0:
+        if N == 2:
+            return None
+        return (2, N // 2)
+
+    for batch in expand_wavefront(N, max_batches=max_radius):
+        for triple in batch:
+            result = resonance_check(N, triple)
+            if result is not None:
+                p, q = result
+                if 1 < p < N and p * q == N:
+                    return (min(p, q), max(p, q))
+
+            # Also check direct divisibility
+            a, b, c = triple
+            if a > 1 and N % a == 0 and a < N:
+                return (a, N // a)
+            if b > 1 and N % b == 0 and b < N:
+                return (b, N // b)
+
+    return None
