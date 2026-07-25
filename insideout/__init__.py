@@ -2,3 +2,4 @@
 __version__ = "0.1.0"
 
 from .inside_out import central_well, resonance_check, inside_out_factor
+from .factor import factor, factor_with_method
