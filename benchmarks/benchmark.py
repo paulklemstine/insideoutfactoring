@@ -69,6 +69,51 @@ def benchmark(bits: int, num_samples: int = 3):
             print(f"  Speedup: {speedup:.2f}x")
 
 
+def benchmark_chart_collision(semiprimes: list[int], steps: int = 50000, walks: int = 16):
+    """Benchmark chart_collision_factor on a corpus of known semiprimes.
+
+    Returns list of (N, success, time_ms, method).
+    """
+    from insideout.projective_collision import chart_collision_factor
+    results = []
+    for N in semiprimes:
+        start = time.perf_counter()
+        result = chart_collision_factor(N, max_steps=steps, num_walks=walks)
+        elapsed = (time.perf_counter() - start) * 1000
+        if result:
+            factors = sorted(result)
+            results.append((N, True, elapsed, f"chart_collision({steps},{walks})"))
+        else:
+            results.append((N, False, elapsed, f"chart_collision({steps},{walks})"))
+    return results
+
+
+def compare_methods(semiprimes: list[int]):
+    """Compare factor_with_method vs chart_collision_factor on corpus."""
+    from insideout.projective_collision import chart_collision_factor
+    print(f"\n{'N':>20}  {'method':>25}  {'time_ms':>10}  {'success'}")
+    print("-" * 65)
+    for N in semiprimes:
+        # factor_with_method
+        start = time.perf_counter()
+        r1 = factor_with_method(N)
+        t1 = (time.perf_counter() - start) * 1000
+        if r1:
+            factors, method = r1
+            print(f"{N:>20}  {method:>25}  {t1:>10.2f}  {'YES'}")
+        else:
+            print(f"{N:>20}  {'FAILED':>25}  {t1:>10.2f}  {'NO'}")
+
+        # chart_collision alone (higher budget)
+        start = time.perf_counter()
+        r2 = chart_collision_factor(N, max_steps=200000, num_walks=32)
+        t2 = (time.perf_counter() - start) * 1000
+        if r2:
+            print(f"{'':>20}  {'chart_collision':>25}  {t2:>10.2f}  {'YES'}")
+        else:
+            print(f"{'':>20}  {'chart_collision':>25}  {t2:>10.2f}  {'NO'}")
+
+
 if __name__ == "__main__":
     for bits in [8, 16, 24, 32]:
         benchmark(bits)
