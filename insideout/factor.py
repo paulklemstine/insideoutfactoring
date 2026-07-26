@@ -55,6 +55,9 @@ from .resonance_cascade import resonance_cascade_factor
 from .lucas_ppt import lucas_ppt_factor
 from .projective_collision import chart_collision_factor as projective_chart_factor
 from .orbit_smooth_relation import orbit_smooth_relation_factor
+from .snds import snds_factor
+from .hashimoto_factor import hashimoto_factor
+from .adaptive_portfolio import adaptive_factor as adaptive_portfolio_factor
 from .spectral_factor import spectral_cascade_factor
 from .relation_generator import relation_factor
 from .fibonacci_pythagorean import fibonacci_pythagorean_factor
@@ -103,7 +106,8 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
     "lattice_factor", "hybrid_smooth",
     "graph_order", "order_spectrum",
     "coppersmith", "hybrid_cyclo_sl2", "relation_gen",
-    "projective_chart", "orbit_relation",
+    "projective_chart", "orbit_relation", "snds", "hashimoto",
+    "adaptive_portfolio",
     "inside_out", "wavefront", "trial_division",
     """
     if N < 4:
@@ -189,6 +193,27 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         p, q = or_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "orbit_relation")
+
+    # Strategy: SNDS — Spectral Nilpotent Dynamical System (trace sequence BM over SL2)
+    snds_result = snds_factor(N, bound=50000)
+    if snds_result is not None:
+        p, q = snds_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "snds")
+
+    # Strategy: Hashimoto Operator — non-backtracking walk on SL2 Cayley graph
+    hm_result = hashimoto_factor(N, walks=5000, walk_length=30)
+    if hm_result is not None:
+        p, q = hm_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "hashimoto")
+
+    # Strategy: Adaptive Portfolio — Thompson-sampled multi-method orchestration
+    ap_result = adaptive_portfolio_factor(N, time_budget_ms=5000)
+    if ap_result is not None and ap_result[0] is not None:
+        p, q = ap_result[0]
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "adaptive_portfolio")
 
     # Strategy: Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
     # Combines CF-convergent squaring orbits, SL₂(Z/NZ) matrix powers,
