@@ -54,6 +54,7 @@ from .fibonacci_factor import fibonacci_gcd_factor, pisano_factor
 from .resonance_cascade import resonance_cascade_factor
 from .lucas_ppt import lucas_ppt_factor
 from .projective_collision import chart_collision_factor as projective_chart_factor
+from .periodic_word_order import periodic_word_order_factor
 from .orbit_smooth_relation import orbit_smooth_relation_factor
 from .snds import snds_factor
 from .hashimoto_factor import hashimoto_factor
@@ -181,6 +182,16 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "projective_chart")
 
+    # Strategy: Periodic Word Order (PW-012 recurrence-reduced)
+    # Cheap Lucas-style ladder on Berggren word traces; covers order families
+    # missed by p-1 and p+1. Fast probe before resonance_cascade.
+    pwo_bound = min(5000, max(500, N.bit_length() * 10))
+    pwo_result = periodic_word_order_factor(N, bound=pwo_bound)
+    if pwo_result is not None:
+        p, q = pwo_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "periodic_word")
+
     # Strategy: Resonance Cascade Factoring
     # Combines CF-convergent resonance, Möbius descent, and squaring conductance
     # SLOWER: typically 50-100ms when it succeeds
@@ -192,37 +203,39 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
 
 
     # Strategy: Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
-    # === Research Experiments (run after established methods) ===
-    # Orbit Smooth Relation -- NFS-style smooth relation collection
-    or_result = orbit_smooth_relation_factor(N, bound=10000, word_length=10)
-    if or_result is not None:
-        p, q = or_result
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return ((min(p, q), max(p, q)), "orbit_relation")
-    
-    # SNDS -- trace sequence Berlekamp-Massey
-    snds_result = snds_factor(N, bound=30000)
-    if snds_result is not None:
-        p, q = snds_result
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return ((min(p, q), max(p, q)), "snds")
-    
-    # Hashimoto -- non-backtracking walk on SL2
-    hm_result = hashimoto_factor(N, walks=3000, walk_length=20)
-    if hm_result is not None:
-        p, q = hm_result
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return ((min(p, q), max(p, q)), "hashimoto")
-    
-    # Adaptive Portfolio -- Thompson-sampled orchestration
-    ap_result = adaptive_portfolio_factor(N, time_budget_ms=3000)
-    if ap_result is not None and ap_result[0] is not None:
-        p, q = ap_result[0]
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return ((min(p, q), max(p, q)), "adaptive_portfolio")
+    # === Research Experiments (guarded by bit size) ===
+    # These methods are O(sqrt(p)) or have large-constant overhead;
+    # only run them for smaller N where they complete quickly.
+    if N.bit_length() <= 512:
+        # Orbit Smooth Relation -- NFS-style smooth relation collection
+        or_result = orbit_smooth_relation_factor(N, bound=5000, word_length=8)
+        if or_result is not None:
+            p, q = or_result
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "orbit_relation")
 
-    # Novel methods (guarded by bit size — these are O(sqrt(p)) and only viable for smaller N)
-    if N.bit_length() <= 128:
+        # SNDS -- trace sequence Berlekamp-Massey
+        snds_result = snds_factor(N, bound=5000)
+        if snds_result is not None:
+            p, q = snds_result
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "snds")
+
+        # Hashimoto -- non-backtracking walk on SL2
+        hm_result = hashimoto_factor(N, walks=1000, walk_length=15)
+        if hm_result is not None:
+            p, q = hm_result
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "hashimoto")
+
+        # Adaptive Portfolio -- Thompson-sampled orchestration
+        ap_result = adaptive_portfolio_factor(N, time_budget_ms=1000)
+        if ap_result is not None and ap_result[0] is not None:
+            p, q = ap_result[0]
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "adaptive_portfolio")
+
+    # Novel methods (guarded by bit size — these are O(sqrt(p)
         # P-adic slope: smooth ladder + collision GCD
         pad_result = padic_factor(N, smooth_bound=10000)
         if pad_result is not None:

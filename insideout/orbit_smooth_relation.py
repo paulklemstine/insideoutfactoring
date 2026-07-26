@@ -122,10 +122,13 @@ def smoothness_bound_for_N(N: int) -> int:
     """Suggest a smoothness bound based on N size.
 
     Capped at 2^22 (~4 million) to keep factor base manageable.
-    For large N, the orbit norms are also bounded, so a moderate
-    smoothness bound still captures smooth relations if they exist.
+    Uses integer sqrt to avoid float overflow for large N.
     """
-    return min(max(2**18, int(N ** 0.25)), 2**22)
+    # N ** 0.25 = sqrt(sqrt(N)) using integer arithmetic
+    n_bits = N.bit_length()
+    # Approximate N^0.25 as 2^(n_bits/4)
+    approx = 1 << max(0, n_bits // 4)
+    return min(max(2**18, approx), 2**22)
 
 
 def factorize_small(n: int, bound: int) -> dict[int, int] | None:
