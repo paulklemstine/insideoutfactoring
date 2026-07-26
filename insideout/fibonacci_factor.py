@@ -6,7 +6,7 @@ Key properties:
 - gcd(F_m, F_n) = F_{gcd(m,n)} (proven in Fib_gcd_identity.lean)
 - If p | F_n, then the entry point α(p) divides n
 - The Pisano period π(N) satisfies π(pq) = lcm(π(p), π(q)) for coprime p,q
-- For N = pq, if π(p) ≠ π(q), then gcd(F_{π(p)}, N) gives a factor
+- For N = pq, if π(p) != π(q), then gcd(F_{π(p)}, N) gives a factor
 
 This implements Algorithms 29-31 from the SPB Framework's factoring catalog.
 """
@@ -56,7 +56,7 @@ def pisano_period(N: int, max_search: int = 100000) -> int | None:
     """Compute the Pisano period π(N): the period of Fibonacci numbers mod N.
 
     The Pisano period is the smallest k > 0 such that
-    F_k ≡ 0 (mod N) and F_{k+1} ≡ 1 (mod N).
+    F_k == 0 (mod N) and F_{k+1} == 1 (mod N).
 
     Returns the period, or None if not found within max_search iterations.
     """
@@ -74,7 +74,7 @@ def pisano_period(N: int, max_search: int = 100000) -> int | None:
 def entry_point(N: int, max_search: int = 100000) -> int | None:
     """Compute the Fibonacci entry point α(N): the smallest k > 0 with N | F_k.
 
-    For prime p, α(p) divides p-1 (if p ≡ ±1 mod 5) or 2(p+1) (if p ≡ ±2 mod 5).
+    For prime p, α(p) divides p-1 (if p == ±1 mod 5) or 2(p+1) (if p == ±2 mod 5).
 
     Returns the entry point, or None if not found within max_search.
     """
@@ -183,7 +183,7 @@ def fibonacci_gcd_factor(N: int, bound: int = 10000) -> tuple[int, int] | None:
     """Factor N using Fibonacci GCD method (Pollard rho-like).
 
     Compute gcd(F_k, N) for k = 1, 2, 3, ... up to bound.
-    If p | N and α(p) | k, then p | F_k, so gcd(F_k, N) ≥ p.
+    If p | N and α(p) | k, then p | F_k, so gcd(F_k, N) >= p.
 
     This is analogous to Pollard's p-1 but using Fibonacci divisibility
     instead of multiplicative order.

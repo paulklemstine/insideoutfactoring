@@ -1,8 +1,8 @@
 """Primitive Pythagorean triple generation, validation, and (m,n) parametrization.
 
 A primitive Pythagorean triple (PPT) is a triple (a, b, c) of positive
-integers with a² + b² = c², gcd(a, b) = 1, and a, b of opposite parity.
-Every PPT can be written as (m²−n², 2mn, m²+n²) for coprime m > n > 0
+integers with a2 + b2 = c2, gcd(a, b) = 1, and a, b of opposite parity.
+Every PPT can be written as (m2−n2, 2mn, m2+n2) for coprime m > n > 0
 with m − n odd.
 """
 from __future__ import annotations
@@ -30,7 +30,7 @@ def is_ppt(triple: Triple) -> bool:
 
 
 def is_valid_triple(triple: Triple) -> bool:
-    """Check whether a triple satisfies a² + b² = c² (may be non-primitive)."""
+    """Check whether a triple satisfies a2 + b2 = c2 (may be non-primitive)."""
     a, b, c = triple
     return a > 0 and b > 0 and c > 0 and a * a + b * b == c * c
 
@@ -46,7 +46,7 @@ def normalize_triple(triple: Triple) -> Triple:
 def mn_to_triple(m: int, n: int) -> Triple:
     """Convert (m, n) parametrization to a Pythagorean triple.
 
-    Returns (m²−n², 2mn, m²+n²). Does not enforce coprimality;
+    Returns (m2−n2, 2mn, m2+n2). Does not enforce coprimality;
     call is_ppt() to check.
     """
     return Triple(m * m - n * n, 2 * m * n, m * m + n * n)
@@ -60,15 +60,15 @@ def triple_to_mn(triple: Triple) -> tuple[int, int] | None:
     a, b, c = normalize_triple(triple)
     if not is_ppt(Triple(a, b, c)):
         return None
-    # For a PPT in standard form (a < b): a = m²−n², b = 2mn, c = m²+n²
-    # So m² = (c + a) / 2, n² = (c − a) / 2
+    # For a PPT in standard form (a < b): a = m2−n2, b = 2mn, c = m2+n2
+    # So m2 = (c + a) / 2, n2 = (c − a) / 2
     m_sq = (c + a) // 2
     n_sq = (c - a) // 2
     m = isqrt(m_sq)
     n = isqrt(n_sq)
     if m * m == m_sq and n * n == n_sq and m > n > 0:
         return (m, n)
-    # Try the other assignment: a = 2mn, b = m²−n² (if b was the odd leg)
+    # Try the other assignment: a = 2mn, b = m2−n2 (if b was the odd leg)
     m_sq = (c + b) // 2
     n_sq = (c - b) // 2
     m = isqrt(m_sq)

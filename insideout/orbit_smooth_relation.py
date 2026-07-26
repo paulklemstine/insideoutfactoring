@@ -101,7 +101,7 @@ def _primes_upto(n: int) -> list[int]:
 
 
 def is_smooth(n: int, bound: int) -> bool:
-    """Return True if all prime factors of n are ≤ bound.
+    """Return True if all prime factors of n are <= bound.
 
     Returns True for n < 2.
     """
@@ -132,7 +132,7 @@ def smoothness_bound_for_N(N: int) -> int:
 
 
 def factorize_small(n: int, bound: int) -> dict[int, int] | None:
-    """Return exponent vector dict {prime: exponent} for n's prime factors ≤ bound.
+    """Return exponent vector dict {prime: exponent} for n's prime factors <= bound.
 
     Skips numbers with any prime factor > bound.  Returns None if n has
     a large prime factor, otherwise returns the exponent map.
@@ -331,7 +331,7 @@ def extract_congruence(null_vec: list[int],
                        norms: list[int],
                        relations: list[dict[int, int]],
                        N: int) -> tuple[int, int] | None:
-    """Build x^2 ≡ y^2 (mod N) from nullvector and extract a factor.
+    """Build x^2 == y^2 (mod N) from nullvector and extract a factor.
 
     The nullvector (over GF(2)) encodes which rows to xor.
     The xor of those rows sums to zero → product of their norms
@@ -389,6 +389,10 @@ def orbit_smooth_relation_factor(N: int,
     s = isqrt(N)
     if s * s == N and s > 1:
         return (s, s)
+
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
             return (p, N // p)

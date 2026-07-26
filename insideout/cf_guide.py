@@ -123,7 +123,7 @@ def cf_factor_check(N: int, max_terms: int = 100) -> tuple[int, int] | None:
     6. (q_k + 1) divides N
 
     This is extremely effective for close-factor semiprimes because
-    the CF convergents of sqrt(N) rapidly approach p and q when p ≈ q.
+    the CF convergents of sqrt(N) rapidly approach p and q when p ~= q.
 
     Returns (factor, N // factor) with factor < N // factor if found,
     None if no convergent reveals a factor.

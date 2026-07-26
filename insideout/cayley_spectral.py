@@ -8,9 +8,9 @@ Let G = SL2(Z/NZ) with generating set S = {U, A, D} (the three Berggren matrices
 The Cayley graph Cay(G, S) is a 6-regular graph (each vertex has 6 directed edges).
 
 Key facts:
-1. |G| = N(N² - 1) for N prime (order of SL2(F_N))
+1. |G| = N(N2 - 1) for N prime (order of SL2(F_N))
 2. For N = pq, by CRT: SL2(Z/NZ) ≅ SL2(F_p) × SL2(F_q)
-   So |G| = p(p²-1) · q(q²-1)
+   So |G| = p(p2-1) · q(q2-1)
 3. The adjacency matrix A of Cay(G, S) has eigenvalues that factor through
    the irreducible representations of G.
 4. By CRT, the eigenvalues of A mod N are pairs (λ_p, λ_q) where λ_p is an
@@ -22,37 +22,37 @@ The second-largest eigenvalue λ_2 of Cay(G, S) satisfies:
 where λ_2(p) is the second eigenvalue mod p.
 
 For SL2(F_p), the spectral gap is known (Selberg, Bourgain-Gamburd):
-  λ_2(p) ≤ 2√2 / √p  (for large p, by expander mixing)
+  λ_2(p) <= 2sqrt2 / sqrtp  (for large p, by expander mixing)
 
 NOVEL ALGORITHM — "Spectral Gap Detection":
-1. Pick a random starting vector v ∈ Z_N^G (or a small subspace)
-2. Apply the adjacency operator A repeatedly: v, Av, A²v, ...
+1. Pick a random starting vector v in Z_N^G (or a small subspace)
+2. Apply the adjacency operator A repeatedly: v, Av, A2v, ...
 3. The projection onto the second eigenvector grows as (λ_2)^k
 4. By tracking the RAYLEIGH QUOTIENT ⟨v, Av⟩ / ⟨v, v⟩, we estimate λ_2
-5. If λ_2 ≈ 2√2/√p for some small p, we can recover p from the gap!
+5. If λ_2 ~= 2sqrt2/sqrtp for some small p, we can recover p from the gap!
 
 PRACTICAL IMPLEMENTATION (can't build full |G|×|G| matrix):
 Instead, we use the "local spectral test":
-1. Pick a random g ∈ SL2(Z/NZ) (as a 2x2 matrix)
+1. Pick a random g in SL2(Z/NZ) (as a 2x2 matrix)
 2. Apply random words in {U,A,D} of length k, computing the endpoint
 3. The distribution of endpoints after k steps approaches uniform if the
    spectral gap is large (rapid mixing)
 4. The MIXING TIME is related to the spectral gap:
-   t_mix ≈ log(|G|) / (1 - λ_2)
-5. For SL2(F_p), t_mix ≈ log(p) / (1 - 2√2/√p) ≈ log(p) for large p
+   t_mix ~= log(|G|) / (1 - λ_2)
+5. For SL2(F_p), t_mix ~= log(p) / (1 - 2sqrt2/sqrtp) ~= log(p) for large p
 6. The mixing time mod N is max(t_mix(p), t_mix(q))
 
 THE FACTORING ALGORITHM:
 1. Generate random walks of increasing length k on SL2(Z/NZ)
 2. At each k, compute the COLLISION RATE: how often two walks reach the same state
-3. The collision rate transitions from "structured" (low k, birthday ≈ |G|^(1/2))
+3. The collision rate transitions from "structured" (low k, birthday ~= |G|^(1/2))
    to "uniform" (high k, uniform distribution)
 4. The TRANSITION POINT reveals the spectral gap, which reveals min(p,q)
 
 SIMPLER — "Eigenvalue GCD" method:
-1. For a random g ∈ SL2(Z/NZ), compute g^k for k = 1, 2, ..., B
+1. For a random g in SL2(Z/NZ), compute g^k for k = 1, 2, ..., B
 2. For each k, compute gcd(tr(g^k) - 2, N)
-3. If g has eigenvalue 1 mod p but not mod q, then tr(g^k) ≡ 2 mod p
+3. If g has eigenvalue 1 mod p but not mod q, then tr(g^k) == 2 mod p
    but tr(g^k) ≢ 2 mod q, so gcd(tr(g^k) - 2, N) = p
 4. The order of g mod p divides p-(a/p) where (a/p) is the Legendre symbol
    of the discriminant. For most g, this order divides p-1 or p+1.
@@ -220,6 +220,10 @@ def cayley_spectral_factor(N: int, max_steps: int = 50000,
     s = isqrt(N)
     if s * s == N and s > 1:
         return (s, s)
+
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
             return (p, N // p)

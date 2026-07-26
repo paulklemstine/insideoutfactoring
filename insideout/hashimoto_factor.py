@@ -17,12 +17,12 @@ THEORY:
 CORE ALGORITHM:
 1. Non-backtracking random walk on SL2(Z/NZ) with generators {U, A, D}
 2. At each step, compute tr(g) mod p and tr(g) mod q (implicitly via mod N)
-3. Count parabolic events: tr(g) ≡ 2 (mod p) or (mod q)
+3. Count parabolic events: tr(g) == 2 (mod p) or (mod q)
 4. Estimate densities: p_est = (# parabolic) / (# samples)
-5. Solve: 1/(p+1) ≈ p_est and 1/(q+1) ≈ q_est, giving p ≈ 1/p_est - 1
+5. Solve: 1/(p+1) ~= p_est and 1/(q+1) ~= q_est, giving p ~= 1/p_est - 1
 
 PRACTICAL IMPLEMENTATION:
-- We work entirely modulo N; parabolic detection is tr(g) ≡ 2 (mod N)
+- We work entirely modulo N; parabolic detection is tr(g) == 2 (mod N)
 - The trace mod N "bleeds through" from both mod p and mod q components
 - By performing many walks and recording the trace distribution, we can
   extract the parabolic probability which encodes p and q information.
@@ -134,7 +134,7 @@ def _random_sl2_matrix(N: int) -> tuple:
 
         # Check if a is zero
         if a == 0:
-            # Need bc ≡ 1 (mod N) for det = 1
+            # Need bc == 1 (mod N) for det = 1
             g_bc = gcd(b * c % N, N)
             if 1 < g_bc < N:
                 return (g_bc, N // g_bc)  # Found a factor!
@@ -232,9 +232,9 @@ def trace_at_step(walk: list[tuple], step: int) -> int | None:
 
 
 def parabolic_count(walk: list[tuple], mod: int) -> int:
-    """Count parabolic elements in walk: tr(g) ≡ 2 (mod mod).
+    """Count parabolic elements in walk: tr(g) == 2 (mod mod).
 
-    An element g ∈ SL2(F_p) is parabolic iff tr(g) = 2, which means
+    An element g in SL2(F_p) is parabolic iff tr(g) = 2, which means
     g is conjugate to [[1,1],[0,1]] (unipotent). In PSL2 this corresponds
     to the stabilizer of a rational slope.
 
@@ -243,7 +243,7 @@ def parabolic_count(walk: list[tuple], mod: int) -> int:
         mod: Modulus to check (p or q)
 
     Returns:
-        Number of steps where tr(g) ≡ 2 (mod mod)
+        Number of steps where tr(g) == 2 (mod mod)
     """
     count = 0
     for mat, _ in walk:
@@ -261,7 +261,7 @@ def parabolic_density(walk: list[tuple], mod: int) -> float:
         mod: Modulus to check
 
     Returns:
-        Fraction of steps with tr(g) ≡ 2 (mod mod), in [0, 1]
+        Fraction of steps with tr(g) == 2 (mod mod), in [0, 1]
     """
     if len(walk) == 0:
         return 0.0
@@ -276,15 +276,15 @@ def parabolic_density_estimate(N: int, samples: int = 1000, walk_length: int = 2
                                 seed: int | None = None) -> dict:
     """Estimate parabolic density in SL2(Z/NZ) via non-backtracking walks.
 
-    The parabolic density is the fraction of elements g ∈ SL2(Z/NZ) with
-    tr(g) ≡ 2 (mod N). This is related to the proportion of elements in
+    The parabolic density is the fraction of elements g in SL2(Z/NZ) with
+    tr(g) == 2 (mod N). This is related to the proportion of elements in
     subgroups isomorphic to the unipotent subgroup (z -> z+1).
 
     For the full SL2(F_p), the number of parabolic elements (including identity)
     is p+1 in PSL2(F_p). So the density is (p+1)/|SL2(F_p)| = (p+1)/(p(p^2-1))
     which is approximately 1/p for large p.
 
-    More precisely: in PSL2(F_p), the stabilizer of ∞ (upper triangular
+    More precisely: in PSL2(F_p), the stabilizer of inf (upper triangular
     matrices with tr=2) has size p+1 including infinity. The density of
     parabolic elements (tr=2) in PSL2 is 2/(p+1) accounting for ±I.
 
@@ -318,7 +318,7 @@ def parabolic_density_estimate(N: int, samples: int = 1000, walk_length: int = 2
             trace_counts[tr] = trace_counts.get(tr, 0) + 1
             total_steps += 1
 
-            # Check parabolic: tr ≡ 2 (mod N)
+            # Check parabolic: tr == 2 (mod N)
             if tr == 2 % N:
                 total_parabolic += 1
 
@@ -372,7 +372,7 @@ def unit_cayley_graph_sl2(N: int) -> dict:
         'num_edges': num_edges,
         'generators': GENERATOR_NAMES,
         'generator_matrices': [U_MAT, A_MAT, V],
-        'hashimoto spectral bound': isqrt(degree - 1),  # = sqrt(2) ≈ 1.414
+        'hashimoto spectral bound': isqrt(degree - 1),  # = sqrt(2) ~= 1.414
     }
 
 
@@ -387,9 +387,9 @@ def factor_from_parabolic_density(N: int, p_estimate: float, q_estimate: float) 
     unipotent subgroup density, or more precisely the fraction of g with
     tr(g) = 2 is 2/(p+1) in PSL2.
 
-    If p_est ≈ 1/(p+1) and q_est ≈ 1/(q+1), then:
-        p ≈ 1/p_est - 1
-        q ≈ 1/q_est - 1
+    If p_est ~= 1/(p+1) and q_est ~= 1/(q+1), then:
+        p ~= 1/p_est - 1
+        q ~= 1/q_est - 1
 
     Args:
         N: Original composite modulus
@@ -406,7 +406,7 @@ def factor_from_parabolic_density(N: int, p_estimate: float, q_estimate: float) 
         raise ValueError(f"Invalid density estimates: p={p_estimate}, q={q_estimate}")
 
     # Convert density to factor estimate
-    # density ≈ 1/(factor+1) => factor ≈ 1/density - 1
+    # density ~= 1/(factor+1) => factor ~= 1/density - 1
     p_est = int(round(1.0 / p_estimate - 1))
     q_est = int(round(1.0 / q_estimate - 1))
 
@@ -425,7 +425,7 @@ def _estimate_factor_from_density(N: int, density: float) -> int:
     """Estimate a single factor from parabolic density.
 
     The trace-2 density in SL2(F_p) is 2/(p+1) for the full group.
-    We invert: p ≈ 2/density - 1.
+    We invert: p ~= 2/density - 1.
 
     Args:
         N: Composite modulus (used for validation)
@@ -440,7 +440,7 @@ def _estimate_factor_from_density(N: int, density: float) -> int:
     # The exact density depends on which subgroup we're measuring
     # For unipotent subgroup (z->z+1): size is p+1 in PSL2
     # For full SL2(F_p): proportion with tr=2 is 2/(p+1)
-    # But we measure tr ≡ 2 mod N, which wraps both mod p and mod q
+    # But we measure tr == 2 mod N, which wraps both mod p and mod q
     # The "effective" density is dominated by the smaller factor
 
     est = 2.0 / density - 1.0
@@ -469,7 +469,7 @@ def _extract_factors_from_traces(N: int, trace_counts: dict, total: int) -> tupl
         return None
 
     # Look for trace values that are suspiciously common
-    # If tr = k and k ≡ 2 (mod p) but k ≠ 2 (mod q), then gcd(k-2, N) might give p
+    # If tr = k and k == 2 (mod p) but k != 2 (mod q), then gcd(k-2, N) might give p
     for tr_val, count in trace_counts.items():
         if tr_val == 2 % N:
             continue  # Already checked
@@ -511,8 +511,8 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
     1. Perform many non-backtracking random walks on SL2(Z/NZ)
     2. At each step, record tr(g) mod N
     3. The distribution of tr(g) reveals structure:
-       - tr(g) ≡ 2 (mod p) occurs with probability ~1/(p+1) per element in PSL2
-       - tr(g) ≡ 2 (mod q) occurs with probability ~1/(q+1)
+       - tr(g) == 2 (mod p) occurs with probability ~1/(p+1) per element in PSL2
+       - tr(g) == 2 (mod q) occurs with probability ~1/(q+1)
     4. By analyzing trace distributions, we can estimate p and q
     5. Additional: gcd(tr(g) - 2, N) can reveal factors directly
 
@@ -549,7 +549,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
 
     trace_counts = {}  # tr mod N -> count
     total = 0
-    parabolic_tr2 = 0  # count of tr ≡ 2 (mod N)
+    parabolic_tr2 = 0  # count of tr == 2 (mod N)
 
     for _ in range(walks):
         walk = nonbacktracking_walk(None, walk_length, N)
@@ -564,7 +564,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
 
             # Also check: tr = -2 mod N
             if tr == (N - 2) % N:
-                # This is tr ≡ -2, which in PSL2 means same absolute value
+                # This is tr == -2, which in PSL2 means same absolute value
                 pass
 
     if total == 0:
@@ -573,7 +573,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
     # =================================================================
     # METHOD 1: Direct GCD from trace-2 events
     # =================================================================
-    # For tr(g) ≡ 2 (mod p), we have g ≡ I (mod p) in PSL2
+    # For tr(g) == 2 (mod p), we have g == I (mod p) in PSL2
     # So g - I shares factor p with N
     # We already counted these; now extract factors
 
@@ -582,7 +582,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
         for mat, _ in walk:
             tr = _mat2_trace(mat) % N
 
-            # Check if tr ≡ 2 (mod p) for some p|N
+            # Check if tr == 2 (mod p) for some p|N
             # This is equivalent to g having eigenvalue 1 mod p
             # In SL2, this means (g - I) has determinant 0 mod p
             # But more directly: check gcd entries
@@ -609,7 +609,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
     # =================================================================
     # METHOD 2: Trace value GCD
     # =================================================================
-    # For tr = k where k ≡ 2 (mod p) but k ≠ 2 (mod q):
+    # For tr = k where k == 2 (mod p) but k != 2 (mod q):
     # gcd(k - 2, N) = p
 
     for tr_val, count in list(trace_counts.items()):
@@ -622,7 +622,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
         if 1 < g < N:
             return g, N // g
 
-        # Try gcd(tr + 2, N) for tr ≡ -2 mod p
+        # Try gcd(tr + 2, N) for tr == -2 mod p
         sum_ = (tr_val + 2) % N
         g = gcd(sum_, N)
         if 1 < g < N:
@@ -637,7 +637,7 @@ def hashimoto_factor(N: int, walks: int = 10000, walk_length: int = 20,
 
     if density > 0:
         # Estimate factors from density
-        # density ≈ 2/(min(p,q) + 1) for PSL2
+        # density ~= 2/(min(p,q) + 1) for PSL2
         # Actually in full SL2, tr=2 includes ±I and the unipotent subgroup
         # The proportion is approximately 2/(p+1) for one factor structure
 

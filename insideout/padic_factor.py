@@ -13,7 +13,7 @@ Each factor's group has order p-1 and q-1 respectively. The discrete
 logarithm problem has DIFFERENT structure in each component. The key
 insight: the p-adic logarithm
 
-    log_p(x) = Σ_{k=1}^∞ (-1)^{k+1} (x-1)^k / k   (converges p-adically)
+    log_p(x) = Σ_{k=1}^inf (-1)^{k+1} (x-1)^k / k   (converges p-adically)
 
 satisfies log_p(g^k) = k · log_p(g) mod p, but log_q(g^k) = k · log_q(g) mod q.
 Since log_p(g) and log_q(g) live in groups of different size (p-1 vs q-1),
@@ -25,8 +25,8 @@ Three stages, each strictly integer arithmetic (no floats):
 
 1. SMOOTH LADDER (Pollard p-1 with prime-powers):
    Compute g^L mod N where L = lcm(1,2,...,B). If p-1 | L, then
-   g^L ≡ 1 (mod p), so gcd(g^L - 1, N) reveals p. We also try
-   L/2, L/3, L/5, ... (L divided by each prime ≤ B) to catch factors
+   g^L == 1 (mod p), so gcd(g^L - 1, N) reveals p. We also try
+   L/2, L/3, L/5, ... (L divided by each prime <= B) to catch factors
    where (p-1)/prime is smooth even if p-1 itself isn't fully B-smooth.
 
 2. P-ADIC SLOPE COLLISION:
@@ -37,7 +37,7 @@ Three stages, each strictly integer arithmetic (no floats):
    difference detectable via pairwise GCD.
 
 3. P-ADIC LOG SERIES:
-   Truncated p-adic logarithm: log(a) ≈ Σ_{j=1}^{d} (-1)^{j+1} (a-1)^j / j
+   Truncated p-adic logarithm: log(a) ~= Σ_{j=1}^{d} (-1)^{j+1} (a-1)^j / j
    (mod N), skipping j not invertible mod N. The ratio
    (log(g^k) - k·log(g)) should be 0 mod p and 0 mod q individually,
    but if we use a single "log(g)" value, the difference reveals which
@@ -62,7 +62,7 @@ from math import gcd, isqrt
 # ---------------------------------------------------------------------------
 
 def _prime_sieve(bound: int) -> list[int]:
-    """Return all primes ≤ bound using the Sieve of Eratosthenes."""
+    """Return all primes <= bound using the Sieve of Eratosthenes."""
     if bound < 2:
         return []
     # is_composite[n] == 1 means n is known to be composite
@@ -76,9 +76,9 @@ def _prime_sieve(bound: int) -> list[int]:
 
 
 def _prime_powers(bound: int) -> list[tuple[int, int]]:
-    """Return list of (prime, prime^k) for each prime p ≤ bound.
+    """Return list of (prime, prime^k) for each prime p <= bound.
 
-    The exponent k is the largest such that p^k ≤ bound.
+    The exponent k is the largest such that p^k <= bound.
     These are the "prime power" components of lcm(1, 2, ..., bound).
     """
     primes = _prime_sieve(bound)
@@ -92,7 +92,7 @@ def _prime_powers(bound: int) -> list[tuple[int, int]]:
 
 
 def _modinv(a: int, m: int) -> int | None:
-    """Extended GCD modular inverse. Returns None if gcd(a, m) ≠ 1."""
+    """Extended GCD modular inverse. Returns None if gcd(a, m) != 1."""
     g, x, _ = _extended_gcd(a % m, m)
     if g != 1:
         return None
@@ -117,7 +117,7 @@ def _smooth_ladder(g: int, N: int, bound: int) -> int:
     Uses the prime-power decomposition so we get the full smooth ladder
     in O(π(bound)) modular exponentiations instead of O(bound).
 
-    L = ∏ p^{⌊log_p(bound)⌋} for primes p ≤ bound.
+    L = prod p^{⌊log_p(bound)⌋} for primes p <= bound.
     """
     g = g % N
     if g < 2:
@@ -131,9 +131,9 @@ def _pm1_smooth(g: int, N: int, bound: int) -> tuple[int, int] | None:
     """Pollard p-1 factoring with smooth ladder and per-prime reduction.
 
     Stage 1: compute g^L mod N where L = lcm(1..bound). If p-1 | L for
-    some prime p | N, then g^L ≡ 1 (mod p) and gcd(g^L - 1, N) = p.
+    some prime p | N, then g^L == 1 (mod p) and gcd(g^L - 1, N) = p.
 
-    Stage 2 (the novel "L/r" twist): for small primes r ≤ L_R_BOUND,
+    Stage 2 (the novel "L/r" twist): for small primes r <= L_R_BOUND,
     try g^(L/r). This catches factors where (p-1)/r is smooth even if
     p-1 has one prime factor > bound. We compute g^(L/r) by running
     the smooth ladder with r's contribution reduced by one factor.
@@ -178,7 +178,7 @@ def _pm1_smooth(g: int, N: int, bound: int) -> tuple[int, int] | None:
     # with r's contribution reduced by one factor. This catches factors
     # where (p-1)/r is smooth even if p-1 has one "extra" factor of r.
     # Limit to small primes to keep O(π(B_small) * π(B)) manageable.
-    # For L_R_BOUND = 200 and bound = 50000: ~46 * 5133 ≈ 236K pow() calls.
+    # For L_R_BOUND = 200 and bound = 50000: ~46 * 5133 ~= 236K pow() calls.
     L_R_BOUND = min(bound, 200)
     small_prime_powers = [(p, pk) for p, pk in prime_powers if p <= L_R_BOUND]
 
@@ -221,7 +221,7 @@ def _padic_slope(g: int, N: int, bound: int) -> tuple[int, int] | None:
     we get a factor from gcd(s_k - 1, N). The collision check catches
     cases where ord_p(g) divides 2^k - 2^j = 2^j(2^{k-j} - 1).
 
-    The "slope" moniker: if we view log(s_k) ≈ 2^k · log(g), then the
+    The "slope" moniker: if we view log(s_k) ~= 2^k · log(g), then the
     ratio log(s_k)/log(g) = 2^k. If this ratio differs mod p vs mod q
     (because the order of g divides 2^k in one component but not the
     other), the difference s_k - s_j reveals structure.
@@ -230,7 +230,7 @@ def _padic_slope(g: int, N: int, bound: int) -> tuple[int, int] | None:
     if g < 2:
         return None
 
-    # Build squaring sequence up to 2^max_k ≥ bound
+    # Build squaring sequence up to 2^max_k >= bound
     max_k = max(1, bound.bit_length() + 1)
 
     seq = []
@@ -273,14 +273,14 @@ def _padic_slope(g: int, N: int, bound: int) -> tuple[int, int] | None:
 def _padic_log_series(a: int, N: int, depth: int) -> int:
     """Compute truncated p-adic logarithm of a mod N.
 
-    log_p(a) ≈ Σ_{j=1}^{depth} (-1)^{j+1} · (a-1)^j / j   (mod N)
+    log_p(a) ~= Σ_{j=1}^{depth} (-1)^{j+1} · (a-1)^j / j   (mod N)
 
     Division by j is performed via modular inverse, which requires gcd(j, N) = 1.
     Terms where j shares a factor with N are SKIPPED (they would require
     p-adic division, which is the whole point of the algorithm — the
     skipped terms encode the factor structure).
 
-    For a ∈ 1 + pZ_p, this series converges p-adically to log_p(a).
+    For a in 1 + pZ_p, this series converges p-adically to log_p(a).
     For general a, we decompose a = ω(a) · <a> and the formula applies
     to <a>. Here we use the raw series as a heuristic that still
     captures valuation information.
@@ -316,7 +316,7 @@ def _collision_gcd(seq: list[int], N: int) -> tuple[int, int] | None:
 
     For a sequence derived from exponentiation mod N, if two entries
     are congruent mod p but not mod q, their difference shares a factor
-    with N. Checking all pairs is O(n²) but n is small (≤ log N).
+    with N. Checking all pairs is O(n2) but n is small (<= log N).
 
     Returns (p, q) if a factor is found, else None.
     """
@@ -339,7 +339,7 @@ def _log_slope_crosscheck(g: int, N: int, bound: int, depth: int) -> tuple[int, 
     """Cross-check p-adic log values to detect slope divergence.
 
     Compute log(g) and log(g^k) for strategic k values. If log_p(g) has
-    different valuation at p vs q, then log(g^k) - k·log(g) ≡ 0 mod one
+    different valuation at p vs q, then log(g^k) - k·log(g) == 0 mod one
     prime but not the other, and gcd with N reveals the factor.
 
     We use k = 2, 3, 5, 7, ... (small primes) and k = bound, bound-1, ...

@@ -15,9 +15,9 @@ different tr(M) values, covering order families missed by standard
 p-1 and p+1.
 
 Algorithm:
-1. Enumerate short periodic Berggren words (length ≤ 6)
+1. Enumerate short periodic Berggren words (length <= 6)
 2. For each word, compute tr(M_w) mod N
-3. Run a Lucas-style ladder: compute tr(M_w^{p^e}) for primes p ≤ bound
+3. Run a Lucas-style ladder: compute tr(M_w^{p^e}) for primes p <= bound
 4. At each step, check gcd(tr - 2, N) for a proper factor
 5. The panel of words covers complementary order families
 
@@ -36,7 +36,7 @@ from typing import Optional
 # U: (m,n) -> (2m+n, m)  ... no, let me get this right.
 # The standard Berggren matrices acting on (a,b,c) are 3x3.
 # For SL2, we use the (m,n) parametrization where:
-#   a = m²-n², b = 2mn, c = m²+n²
+#   a = m2-n2, b = 2mn, c = m2+n2
 # U: (m,n) -> (2m-n, m)  -- no
 # Let me use the actual SL2 matrices that generate PPTs:
 
@@ -189,9 +189,9 @@ def _dedup_words(words, N):
 
 
 def _smooth_ladder_tr(P, N, bound):
-    """Compute V_{p^e} for each prime p ≤ bound using Lucas doubling.
+    """Compute V_{p^e} for each prime p <= bound using Lucas doubling.
 
-    For each prime power p^e ≤ bound, compute V_{p^e} mod N
+    For each prime power p^e <= bound, compute V_{p^e} mod N
     and check gcd(V_{p^e} - 2, N).
 
     This is the Lucas-analogue of the p-1 smooth ladder.
@@ -207,7 +207,7 @@ def _smooth_ladder_tr(P, N, bound):
     primes = [i for i in range(2, bound + 1) if sieve[i]]
 
     # V_1 = P (already know this)
-    # For each prime, raise to p^e for e=1,2,... while p^e ≤ bound
+    # For each prime, raise to p^e for e=1,2,... while p^e <= bound
     for p in primes:
         pe = p
         while pe <= bound:
@@ -233,7 +233,7 @@ def periodic_word_order_factor(N: int, bound: int = 5000) -> Optional[tuple[int,
 
     For each short periodic word w:
     1. Compute P = tr(M_w) mod N
-    2. Run a Lucas-style smooth ladder: compute V_{p^e} for primes p ≤ bound
+    2. Run a Lucas-style smooth ladder: compute V_{p^e} for primes p <= bound
     3. Check gcd(V_{p^e} ± 2, N) for proper factors
 
     The panel of words covers complementary order families.
@@ -256,6 +256,10 @@ def periodic_word_order_factor(N: int, bound: int = 5000) -> Optional[tuple[int,
     s = isqrt(N)
     if s * s == N and s > 1:
         return (s, s)
+
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
 
     # Quick trial division
     for p in range(3, min(s + 1, 1000), 2):

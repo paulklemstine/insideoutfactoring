@@ -2,9 +2,9 @@
 
 Key insight: Two projective triples x=(a,b,c) and y=(u,v,w) are equal modulo
 a hidden factor p when their three minors vanish modulo p:
-  - av - bu ≡ 0 (mod p)
-  - aw - cu ≡ 0 (mod p)
-  - bw - cv ≡ 0 (mod p)
+  - av - bu == 0 (mod p)
+  - aw - cu == 0 (mod p)
+  - bw - cv == 0 (mod p)
 
 This is a birthday paradox problem: finding a collision between two branch walks.
 Instead of hitting coordinate-zero directly, we look for projective equality.
@@ -157,6 +157,10 @@ def projective_collision_factor(N: int,
     if s * s == N and s > 1:
         return (s, s)
 
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
+
     # Small trial division
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
@@ -254,6 +258,10 @@ def projective_collision_with_cycles(N: int,
     if s * s == N and s > 1:
         return (s, s)
 
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
+
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
             return (p, N // p)
@@ -309,7 +317,7 @@ def chart_determinant(t1: Triple, t2: Triple, N: int) -> int:
     """Single chart determinant for collision detection.
 
     Uses chart [a : c+b].  Collision when:
-        a2*(c1+b1) - a1*(c2+b2) ≡ 0 (mod p)
+        a2*(c1+b1) - a1*(c2+b2) == 0 (mod p)
 
     Returns the raw determinant value (caller applies gcd).
     """
@@ -383,6 +391,10 @@ def chart_collision_factor(N: int,
     s = isqrt(N)
     if s * s == N and s > 1:
         return (s, s)
+
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
             return (p, N // p)

@@ -5,12 +5,12 @@ recurrence whose minimal polynomial over Z/NZ factors into coprime components
 mod p and mod q. The Berlekamp-Massey state over Z/NZ reveals these factors.
 
 Key mathematical facts:
-1. For M ∈ SL2(F_p), tr(M) satisfies the recurrence from charpoly(M):
+1. For M in SL2(F_p), tr(M) satisfies the recurrence from charpoly(M):
    tr(M^{k+2}) = tr(M)·tr(M^{k+1}) - tr(M^2)·tr(M^k)  [Cayley-Hamilton]
    More generally: tr(M^{k+ℓ}) is a Z-linear combination of
    tr(M), tr(M^2), ..., tr(M^{ℓ-1}) for ℓ = degree of minimal poly.
 
-2. The sequence s_k = tr(A^k) mod N for A ∈ SL2(Z/NZ) satisfies the global
+2. The sequence s_k = tr(A^k) mod N for A in SL2(Z/NZ) satisfies the global
    recurrence whose characteristic polynomial is the characteristic polynomial
    of A evaluated at the group algebra level.
 
@@ -24,14 +24,14 @@ Key mathematical facts:
    N, and consecutive coefficients reveal gcd information.
 
 PRACTICAL APPROACH:
-- Pick random A ∈ SL2(Z/NZ)
+- Pick random A in SL2(Z/NZ)
 - Compute s_k = tr(A^k) mod N for k = 1..B
 - Run Berlekamp-Massey over Z/NZ to find minimal polynomial P(x)
 - P(x) factors into P_p(x) mod p and P_q(x) mod q
 - gcd(P(i) - P(i+1), N) or gcd(derivative terms, N) reveals factors
 - Also: gcd of consecutive trace differences reveals factor structure
 
-Algorithm complexity: O(B²) trace computations + O(B²) BM, where B is the
+Algorithm complexity: O(B2) trace computations + O(B2) BM, where B is the
 smoothness bound (order of the matrix mod smallest factor). Sub-exponential.
 """
 from __future__ import annotations
@@ -179,7 +179,7 @@ def berlekamp_massey_basic(sequence, modulus):
 
     This is a straightforward implementation that finds the shortest L and
     coefficients C such that for all n >= L:
-        s_n ≡ sum_{i=1}^{L} C[i] * s_{n-i} (mod modulus)
+        s_n == sum_{i=1}^{L} C[i] * s_{n-i} (mod modulus)
 
     Returns:
         List of coefficients [s_0 form] or None if no unique solution.
@@ -483,7 +483,7 @@ def _crt_trace_poly_factors(traces, N):
     mod p and mod q separately (via trying small x values).
 
     For polynomial P(x) = x^L + c_1*x^{L-1} + ... + c_L (mod N):
-    If P(a) ≡ 0 (mod p) but P(a) ≢ 0 (mod q), then gcd(P(a), N) = p.
+    If P(a) == 0 (mod p) but P(a) ≢ 0 (mod q), then gcd(P(a), N) = p.
     """
     if len(traces) < 4:
         return None
@@ -532,7 +532,7 @@ def _crt_trace_poly_factors(traces, N):
 def _random_sl2(N):
     """Generate a random element of SL2(Z/NZ).
 
-    Returns matrix [[a,b],[c,d]] with a*d - b*c ≡ 1 (mod N).
+    Returns matrix [[a,b],[c,d]] with a*d - b*c == 1 (mod N).
     Uses small coefficients to keep arithmetic manageable.
     """
     import random
@@ -613,7 +613,7 @@ def snds_factor(N: int, bound: int = 50000) -> Optional[tuple[int, int]]:
     of consecutive terms reveals the factors.
 
     Algorithm:
-    1. Pick A ∈ SL2(Z/NZ) (random or CF-guided)
+    1. Pick A in SL2(Z/NZ) (random or CF-guided)
     2. Compute traces tr(A), tr(A^2), ..., tr(A^B) mod N
     3. Berlekamp-Massey to find minimal polynomial of the trace recurrence
     4. Extract factors from the polynomial coefficients via gcd tests
@@ -637,6 +637,10 @@ def snds_factor(N: int, bound: int = 50000) -> Optional[tuple[int, int]]:
     if s * s == N and s > 1:
         return (s, s)
 
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
+
     # Get candidate matrices (CF-guided + random)
     candidate_matrices = _cf_guidance_matrices(N)
 
@@ -657,7 +661,7 @@ def snds_factor(N: int, bound: int = 50000) -> Optional[tuple[int, int]]:
                     return (min(g, other), max(g, other))
 
         # Try different trace sequence lengths
-        # For large N, cap sequence length to avoid O(n²) BM blowup
+        # For large N, cap sequence length to avoid O(n2) BM blowup
         if N.bit_length() > 512:
             max_seq = 50
         else:
@@ -712,6 +716,10 @@ def adaptive_snds_factor(N: int, bound: int = 50000) -> Optional[tuple[int, int]
     s = isqrt(N)
     if s * s == N and s > 1:
         return (s, s)
+
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
 
     # Quick attempt with short sequences
     result = snds_factor(N, bound=1000)

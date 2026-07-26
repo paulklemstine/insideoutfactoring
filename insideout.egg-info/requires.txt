@@ -1,0 +1,9 @@
+
+[dev]
+pytest>=7.0
+
+[scaling]
+gmpy2>=2.1
+
+[validation]
+sympy>=1.12

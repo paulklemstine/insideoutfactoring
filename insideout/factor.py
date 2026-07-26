@@ -6,20 +6,20 @@ Tries multiple strategies in order of expected speed:
 1. Perfect square detection (O(1))
 2. CF convergent divisibility pre-check (O(log N))
 3. Quick trial division for small factors
-4. Brahmagupta-Fibonacci two-square method (for N ≡ 1 mod 4)
+4. Brahmagupta-Fibonacci two-square method (for N == 1 mod 4)
 5. Fermat difference-of-squares (for close factors)
 6. Fibonacci GCD factorization
 7. Resonance Cascade (CF-convergent resonance + Möbius descent + squaring conductance)
 8. Lucas-PPT (Williams p+1 via Berggren tree branch structure)
-9. Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
+9. Spectral Cascade (CF squaring + SL2 matrix order + QR discriminator + idempotent + near-square + walk)
 10. Fibonacci-Pythagorean (smooth-rank Fibonacci + Pythagorean batched GCD)
 11. Multi-Parameter Lucas (smooth-rank with multiple P parameters, decorrelated ranks)
 12. CRT Collision (cross-product Lucas sequence collision detection)
 13. Inside-Out Relation Generator (Berggren tree → smooth relations → congruence of squares)
-14. SL₂ Group-Order Cascade (smooth group order in SL₂(Z/NZ))
-15. Batch CRT Cascade (O(K²) multiplications + O(1) GCD for Lucas cross-products)
+14. SL2 Group-Order Cascade (smooth group order in SL2(Z/NZ))
+15. Batch CRT Cascade (O(K2) multiplications + O(1) GCD for Lucas cross-products)
 16. PPT Quadratic Sieve (PPT-structured smooth relation collection)
-17. CF Matrix Cascade (CF period matrix + SL₂ group-order hybrid)
+17. CF Matrix Cascade (CF period matrix + SL2 group-order hybrid)
 18. CF Cascade (pure CF convergent residue check)
 19. PPT Form Cascade (binary quadratic forms from PPT parameters)
 20. SQUFOF (Shanks' Square Form Factorization)
@@ -142,7 +142,7 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
             return ((p, N // p), "trial_division")
 
     # Strategy: Brahmagupta-Fibonacci two-square method
-    # Effective for N ≡ 1 mod 4 (products of primes ≡ 1 mod 4)
+    # Effective for N == 1 mod 4 (products of primes == 1 mod 4)
     bf_result = brahmagupta_fibonacci_factor(N)
     if bf_result is not None:
         p, q = bf_result
@@ -202,7 +202,7 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
             return ((min(p, q), max(p, q)), "resonance_cascade")
 
 
-    # Strategy: Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
+    # Strategy: Spectral Cascade (CF squaring + SL2 matrix order + QR discriminator + idempotent + near-square + walk)
     # === Research Experiments (guarded by bit size) ===
     # These methods are O(sqrt(p)) or have large-constant overhead;
     # only run them for smaller N where they complete quickly.
@@ -296,8 +296,8 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "crt_collision")
 
-    # Strategy: SL₂ Group-Order Cascade (smooth group order in SL₂(Z/NZ))
-    # Analogous to ECM: uses 2×2 matrix groups. Group order p(p²-1) = p(p-1)(p+1)
+    # Strategy: SL2 Group-Order Cascade (smooth group order in SL2(Z/NZ))
+    # Analogous to ECM: uses 2×2 matrix groups. Group order p(p2-1) = p(p-1)(p+1)
     # gives three independent smoothness targets. Sub-exponential L_p[1/2].
     sl2_result = sl2_group_order_factor(N, bound=50000, curves=10)
     if sl2_result is not None:
@@ -305,14 +305,14 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "sl2_group_order")
 
-    # Strategy: SL₂ with Berggren matrix starting points
+    # Strategy: SL2 with Berggren matrix starting points
     sl2s_result = sl2_structured_factor(N, bound=10000)
     if sl2s_result is not None:
         p, q = sl2s_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "sl2_structured")
 
-    # Strategy: Batch CRT Cascade (O(K²) multiplications + O(1) GCD)
+    # Strategy: Batch CRT Cascade (O(K2) multiplications + O(1) GCD)
     # Extends CRT collision lane to batch cross-product detection
     bcc_result = batch_crt_cascade_factor(N, bound=5000, stage2_bound=1000, max_params=16, stages=2)
     if bcc_result is not None:
@@ -321,17 +321,17 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
             return ((min(p, q), max(p, q)), "batch_crt")
 
     # Strategy: PPT Quadratic Sieve (PPT-structured smooth relation collection)
-    # Uses PPT parameters (m,n) generating values m²+n², m²-n², 2mn for sieving
+    # Uses PPT parameters (m,n) generating values m2+n2, m2-n2, 2mn for sieving
     ppts_result = ppt_quadratic_sieve(N, bound=1000, sieve_range=10000, max_relations=200)
     if ppts_result is not None:
         p, q = ppts_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "ppt_sieve")
 
-    # Strategy: CF Matrix Cascade (CF period matrix + SL₂ group-order hybrid)
+    # Strategy: CF Matrix Cascade (CF period matrix + SL2 group-order hybrid)
     # Combines CFRAC-style residue checks with smooth-group-order detection
-    # using the CF period matrix of √N. Novel: uses the actual period matrix
-    # rather than random SL₂ matrices.
+    # using the CF period matrix of sqrtN. Novel: uses the actual period matrix
+    # rather than random SL2 matrices.
     cfm_result = cf_matrix_cascade_factor(N, bound=50000, cf_steps=10000,
                                            smooth_bound=500, max_relations=200)
     if cfm_result is not None:
@@ -348,7 +348,7 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
             return ((min(p, q), max(p, q)), "cf_cascade")
 
     # Strategy: PPT Form Cascade (binary quadratic forms from PPT parameters)
-    # Uses PPT-derived forms (m²-n², 2mn, m²+n²) with discriminant and SQUFOF reduction
+    # Uses PPT-derived forms (m2-n2, 2mn, m2+n2) with discriminant and SQUFOF reduction
     ptf_result = ppt_form_cascade_factor(N, max_ppt=10000, squfof_steps=50000)
     if ptf_result is not None:
         p, q = ptf_result

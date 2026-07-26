@@ -3,22 +3,22 @@
 A novel factoring algorithm that combines three mathematical insights:
 
 1. **Möbius Descent**: The Berggren tree has a UNIQUE descent path from any
-   PPT back to the root (3,4,5). The sigma invariants σ₁ = a+2b-2c and
-   σ₂ = 2a+b-2c determine which inverse branch to take at each step.
+   PPT back to the root (3,4,5). The sigma invariants σ1 = a+2b-2c and
+   σ2 = 2a+b-2c determine which inverse branch to take at each step.
    This converts tree search into deterministic descent.
 
-2. **CF-Convergent Resonance**: The continued fraction convergents of √N
-   produce (p,q) pairs where p² - Nq² ≈ ±1. These convergents naturally
+2. **CF-Convergent Resonance**: The continued fraction convergents of sqrtN
+   produce (p,q) pairs where p2 - Nq2 ~= ±1. These convergents naturally
    yield Gaussian integer parameters (m,n) whose PPT legs share factors
    with N. The key checks are:
    - gcd(p ± q, N) — direct convergent structure
    - gcd(m ± n, N) — Gaussian integer parametrization
-   - gcd(m² - n², N) and gcd(2mn, N) — PPT leg divisibility
+   - gcd(m2 - n2, N) and gcd(2mn, N) — PPT leg divisibility
 
-3. **Squaring Conductance**: The squaring map x → x² on Z/NZ decomposes
+3. **Squaring Conductance**: The squaring map x → x2 on Z/NZ decomposes
    via CRT into coordinate dynamics on Z/pZ × Z/qZ. The conductance
    (edge-to-volume ratio of admissible cuts) is bounded by:
-   h(N) ≤ min(h(p), h(q))
+   h(N) <= min(h(p), h(q))
    This bottleneck means that the squaring map's mixing rate on Z/NZ
    reveals the minimum conductance among its prime factors, providing
    a way to distinguish N = pq from N = prime.
@@ -42,11 +42,11 @@ from .gaussian import MnPair, mn_to_triple
 def _cf_convergent_resonance(N: int, convs: list[tuple[int, int]]) -> tuple[int, int] | None:
     """Stage 2: Check CF convergents for factor-revealing structure.
 
-    For each convergent (p,q) of √N, check:
+    For each convergent (p,q) of sqrtN, check:
     - gcd(p, N) and gcd(q, N) — direct divisibility
     - gcd(p ± q, N) — sum/difference structure
-    - gcd(p² + q², N) — connects to m² + n² (hypotenuse)
-    - gcd(p² - q², N) — connects to m² - n² (odd leg)
+    - gcd(p2 + q2, N) — connects to m2 + n2 (hypotenuse)
+    - gcd(p2 - q2, N) — connects to m2 - n2 (odd leg)
     - gcd(2pq, N) — connects to 2mn (even leg)
     - Gaussian integer parametrization checks with (m,n) derived from p,q
 
@@ -55,8 +55,8 @@ def _cf_convergent_resonance(N: int, convs: list[tuple[int, int]]) -> tuple[int,
     for pk, qk in convs:
         # Direct convergent divisibility
         for val in [pk, qk, pk + qk, abs(pk - qk),
-                    pk * pk + qk * qk,  # m² + n²
-                    pk * pk - qk * qk,  # m² - n² (if pk > qk)
+                    pk * pk + qk * qk,  # m2 + n2
+                    pk * pk - qk * qk,  # m2 - n2 (if pk > qk)
                     2 * pk * qk]:         # 2mn
             g = gcd(abs(val), N)
             if 1 < g < N:
@@ -79,17 +79,17 @@ def _cf_convergent_resonance(N: int, convs: list[tuple[int, int]]) -> tuple[int,
 def _mobius_descent(N: int, max_depth: int = 50) -> tuple[int, int] | None:
     """Stage 3: Möbius descent from near-N triples.
 
-    For each candidate (m,n) near √N, descend through the Berggren tree
+    For each candidate (m,n) near sqrtN, descend through the Berggren tree
     using sigma invariants and check divisibility at each step.
 
-    The sigma invariants for a PPT (a,b,c) = (m²-n², 2mn, m²+n²) are:
-      σ₁ = a + 2b - 2c = (m-n)² - 1  (wait, let me compute correctly)
-      σ₂ = 2a + b - 2c
+    The sigma invariants for a PPT (a,b,c) = (m2-n2, 2mn, m2+n2) are:
+      σ1 = a + 2b - 2c = (m-n)2 - 1  (wait, let me compute correctly)
+      σ2 = 2a + b - 2c
 
     These determine the unique parent in the Berggren tree:
-      σ₁ > 0, σ₂ < 0 → U-parent
-      σ₁ > 0, σ₂ > 0 → A-parent
-      σ₁ < 0, σ₂ > 0 → D-parent
+      σ1 > 0, σ2 < 0 → U-parent
+      σ1 > 0, σ2 > 0 → A-parent
+      σ1 < 0, σ2 > 0 → D-parent
 
     Returns (p, q) with p*q = N and p < q, or None.
     """
@@ -97,7 +97,7 @@ def _mobius_descent(N: int, max_depth: int = 50) -> tuple[int, int] | None:
 
     s = isqrt(N)
 
-    # Try starting points near √N
+    # Try starting points near sqrtN
     for offset in range(0, 10):
         for m_start in [s + offset, s - offset, s + offset + 1]:
             if m_start < 2:
@@ -151,18 +151,18 @@ def _mobius_descent(N: int, max_depth: int = 50) -> tuple[int, int] | None:
 def _squaring_conductance(N: int, max_iter: int = 500) -> tuple[int, int] | None:
     """Stage 4: CRT Bottleneck / Squaring Conductance analysis.
 
-    The squaring map x → x² on Z/NZ decomposes via CRT into
+    The squaring map x → x2 on Z/NZ decomposes via CRT into
     coordinate dynamics on Z/pZ × Z/qZ when N = pq.
     The CRT Bottleneck theorem (CRTBottleneck.lean) states:
 
-      h(N) ≤ min(h(p), h(q))
+      h(N) <= min(h(p), h(q))
 
     where h is the basin conductance. We exploit this by finding
     points where the squaring orbit structure differs between Z/pZ
     and Z/qZ. Specifically:
-    - gcd(x^(2^k) - 1, N) reveals a factor when x^(2^k) ≡ 1 (mod p)
+    - gcd(x^(2^k) - 1, N) reveals a factor when x^(2^k) == 1 (mod p)
       but x^(2^k) ≢ 1 (mod q)
-    - gcd(x² - x, N) reveals a factor when x is a fixed point of
+    - gcd(x2 - x, N) reveals a factor when x is a fixed point of
       squaring mod p but not mod q
 
     Returns (p, q) with p*q = N and p < q, or None.
@@ -170,7 +170,7 @@ def _squaring_conductance(N: int, max_iter: int = 500) -> tuple[int, int] | None
     if N < 4 or N % 2 == 0:
         return None
 
-    # Strategy 1: Iterated squaring — find x where x^(2^k) ≡ 1 (mod p)
+    # Strategy 1: Iterated squaring — find x where x^(2^k) == 1 (mod p)
     # but x^(2^k) ≢ 1 (mod q). This reveals gcd(x^(2^k)-1, N) = p.
     for x in range(2, min(N, max_iter)):
         # Compute x^(2^k) mod N for k = 0, 1, 2, ...
@@ -182,8 +182,8 @@ def _squaring_conductance(N: int, max_iter: int = 500) -> tuple[int, int] | None
             y = (y * y) % N
 
     # Strategy 2: Fixed points of squaring
-    # x² ≡ x (mod p) for x ≡ 0 or 1 (mod p)
-    # So gcd(x² - x, N) may reveal a factor
+    # x2 == x (mod p) for x == 0 or 1 (mod p)
+    # So gcd(x2 - x, N) may reveal a factor
     for x in range(2, min(N, max_iter)):
         x_sq_mod = (x * x) % N
         g = gcd(x_sq_mod - x, N)
@@ -196,7 +196,7 @@ def _squaring_conductance(N: int, max_iter: int = 500) -> tuple[int, int] | None
 def _pollard_rho(N: int, max_iter: int = 100000) -> tuple[int, int] | None:
     """Stage 5: Pollard's rho algorithm with squaring iteration.
 
-    Uses x → x² + c mod N as the iteration function (connecting to the
+    Uses x → x2 + c mod N as the iteration function (connecting to the
     squaring conductance framework). The constant c varies across restarts
     to find different cycle structures.
 
@@ -273,6 +273,10 @@ def resonance_cascade_factor(N: int, max_cf_terms: int = 200,
     s = isqrt(N)
     if s * s == N and s > 1:
         return (s, s)
+
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
 
     # Quick trial division (small primes only)
     for p in range(3, min(s + 1, 1000), 2):

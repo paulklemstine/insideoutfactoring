@@ -2,7 +2,7 @@
 
 A novel factoring algorithm that converts the Berggren tree search into a
 direct Möbius transform computation. The key insight is that the continued
-fraction expansion of √N encodes the exact sequence of Möbius transforms
+fraction expansion of sqrtN encodes the exact sequence of Möbius transforms
 that navigate the Berggren tree to the factor-revealing node.
 
 The three Berggren Möbius transforms act on the slope z = n/m:
@@ -11,13 +11,13 @@ The three Berggren Möbius transforms act on the slope z = n/m:
   f_D(z) = z/(1 + 2z)  (D-branch: descending)
 
 where (m,n) are the Gaussian integer parameters of the PPT:
-  a = m² - n², b = 2mn, c = m² + n²
+  a = m2 - n2, b = 2mn, c = m2 + n2
 
 Instead of searching the tree node-by-node (BFS/DFS), MCF:
-1. Computes the CF expansion of √N
+1. Computes the CF expansion of sqrtN
 2. Uses each CF convergent to determine the next Möbius transform
 3. Composes all transforms into a single rational function M(z) = (az+b)/(cz+d)
-4. Evaluates M at the root slope z₀ = 1/2 (n/m for root PPT (3,4,5))
+4. Evaluates M at the root slope z0 = 1/2 (n/m for root PPT (3,4,5))
 5. Converts the target slope to (m,n) parameters and checks divisibility
 
 This converts the factoring problem from a SEARCH problem to a COMPUTATION
@@ -77,8 +77,8 @@ class MobiusTransform:
     def invert(self) -> 'MobiusTransform':
         """Compute the inverse Möbius transform.
 
-        If M(z) = (az+b)/(cz+d), then M⁻¹(w) = (dw-b)/(-cw+a).
-        Valid when ad - bc ≠ 0.
+        If M(z) = (az+b)/(cz+d), then M⁻1(w) = (dw-b)/(-cw+a).
+        Valid when ad - bc != 0.
         """
         det = self.a * self.d - self.b * self.c
         if det == 0:
@@ -147,7 +147,7 @@ def mn_to_slope(m: int, n: int) -> Fraction:
 
     The Möbius transforms act on z = n/m (the ratio of Gaussian integer
     parameters). For the root PPT (3,4,5) with (m,n) = (2,1),
-    z₀ = 1/2.
+    z0 = 1/2.
     """
     if m <= 0 or n <= 0 or m <= n:
         return Fraction(0)
@@ -158,10 +158,10 @@ def mobius_cascade_factor(N: int, max_cascade: int = 100) -> tuple[int, int] | N
     """Factor N using the Möbius Cascade method.
 
     Instead of searching the Berggren tree node by node, this method:
-    1. Computes CF(√N) to get the branch sequence
+    1. Computes CF(sqrtN) to get the branch sequence
     2. For each convergent, determines the optimal Möbius transform (U, A, or D)
     3. Composes the Möbius transforms into a single function M(z)
-    4. Evaluates M(z₀) where z₀ = 4/3 (root PPT slope) to get the target slope
+    4. Evaluates M(z0) where z0 = 4/3 (root PPT slope) to get the target slope
     5. Converts the target slope to (m,n) parameters
     6. Checks if the resulting triple's leg divides N
 
@@ -194,12 +194,12 @@ def mobius_cascade_factor(N: int, max_cascade: int = 100) -> tuple[int, int] | N
     cf = cf_sqrt(N, max_terms=max_cascade)
     convs = convergents(cf)
 
-    # Root PPT slope: (3,4,5) has (m,n) = (2,1), so z₀ = n/m = 1/2
+    # Root PPT slope: (3,4,5) has (m,n) = (2,1), so z0 = n/m = 1/2
     z_root = Fraction(1, 2)
 
     # Strategy: compose Möbius transforms along the CF-predicted path
     # At each step, choose the branch (U, A, D) that moves the slope
-    # closest to √N
+    # closest to sqrtN
     target_slope = Fraction(isqrt(N * N + 1), N) if N > 0 else Fraction(0)
 
     # Try all partial compositions (paths of length 1, 2, 3, ...)
@@ -270,8 +270,8 @@ def mobius_cascade_factor(N: int, max_cascade: int = 100) -> tuple[int, int] | N
 
     # Also try the inverse cascade: start from the trivial triple for N
     # and descend toward the root
-    # The trivial triple for N is (N, (N²-1)/2, (N²+1)/2)
-    # Its slope is ((N²-1)/2) / N ≈ N/2
+    # The trivial triple for N is (N, (N2-1)/2, (N2+1)/2)
+    # Its slope is ((N2-1)/2) / N ~= N/2
     z_trivial = Fraction(N * N - 1, 2 * N) if N > 0 else Fraction(0)
 
     M_inv = MobiusTransform(1, 0, 0, 1)  # Identity
@@ -279,7 +279,7 @@ def mobius_cascade_factor(N: int, max_cascade: int = 100) -> tuple[int, int] | N
 
     for i in range(min(len(convs), max_cascade)):
         # Determine inverse branch from σ-invariants
-        # σ₁ = a + 2b - 2c, σ₂ = 2a + b - 2c
+        # σ1 = a + 2b - 2c, σ2 = 2a + b - 2c
         # The branch is determined by which inverse maps to positive triple
         # For now, try all three inverse branches
         for M_inv_branch in [M_U_INV, M_A_INV, M_D_INV]:
@@ -312,7 +312,7 @@ def mobius_cascade_factor(N: int, max_cascade: int = 100) -> tuple[int, int] | N
             z_u = M_U_INV(z_descent)
             z_a = M_A_INV(z_descent)
             z_d = M_D_INV(z_descent)
-            # Pick the branch that gives a positive slope closest to √N's slope
+            # Pick the branch that gives a positive slope closest to sqrtN's slope
             candidates = []
             if z_u > 0:
                 candidates.append(('U', z_u, M_U_INV))

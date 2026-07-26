@@ -4,7 +4,7 @@ A novel factoring algorithm that connects the Berggren tree structure
 to Lucas sequences and Williams' p+1 method.
 
 Key discovery: The D-branch of the Berggren tree produces PPT parameters
-with a_k = (2k+2)² - 1 = 4k² + 8k + 3. These satisfy a quadratic
+with a_k = (2k+2)2 - 1 = 4k2 + 8k + 3. These satisfy a quadratic
 congruence modulo the prime factors of N, connecting to Lucas sequences
 and Williams' p+1 factoring method.
 
@@ -19,7 +19,7 @@ The algorithm:
 
 This is O(log N) operations per Lucas sequence evaluation, with
 O(log N) evaluations needed in the worst case, giving overall
-O(log² N) complexity for the factoring step.
+O(log2 N) complexity for the factoring step.
 """
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def _lucas_v_sequence(P: int, Q: int, N: int, k: int) -> int:
         V_k = P * V_{k-1} - Q * V_{k-2}
 
     Uses the doubling formulas:
-        V_{2k} = V_k² - 2*Q^k
+        V_{2k} = V_k2 - 2*Q^k
         V_{2k+1} = P * V_{2k} - Q^k * V_k (modular)
     """
     if k == 0:
@@ -53,9 +53,9 @@ def _lucas_v_sequence(P: int, Q: int, N: int, k: int) -> int:
         # Recursive doubling
         u_half, v_half = _lucas_pair(n // 2)
 
-        # V_{2k} = V_k² - 2*Q^k
+        # V_{2k} = V_k2 - 2*Q^k
         # U_{2k} = U_k * V_k
-        # For Q=1: V_{2k} = V_k² - 2, U_{2k} = U_k * V_k
+        # For Q=1: V_{2k} = V_k2 - 2, U_{2k} = U_k * V_k
         v_2k = (v_half * v_half - 2 * pow(Q, n // 2, N)) % N
         u_2k = (u_half * v_half) % N
 
@@ -80,7 +80,7 @@ def lucas_ppt_factor(N: int, max_iterations: int = 50000) -> tuple[int, int] | N
 
     The P values come from:
     - U-branch: P = 2k+3 (odd numbers, equivalent to trial division)
-    - D-branch: P = (2k+2)²-1 (near-squares, Williams p+1)
+    - D-branch: P = (2k+2)2-1 (near-squares, Williams p+1)
     - A-branch: P = Pell numbers (exponential growth)
 
     Returns (p, q) with p*q = N and p < q, or None.
@@ -97,6 +97,10 @@ def lucas_ppt_factor(N: int, max_iterations: int = 50000) -> tuple[int, int] | N
     if s * s == N and s > 1:
         return (s, s)
 
+    # Skip for large N — method too slow
+    if N.bit_length() > 256:
+        return None
+
     # Quick trial division
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
@@ -104,7 +108,7 @@ def lucas_ppt_factor(N: int, max_iterations: int = 50000) -> tuple[int, int] | N
 
     # Williams p+1 method with PPT-derived parameters
     # Try various P values derived from Berggren branches
-    # The key P values come from D-branch: P = (2k+2)² - 1
+    # The key P values come from D-branch: P = (2k+2)2 - 1
     # and A-branch Pell numbers
 
     # Strategy 1: Williams p+1 with small P values
@@ -119,7 +123,7 @@ def lucas_ppt_factor(N: int, max_iterations: int = 50000) -> tuple[int, int] | N
             if 1 < g < N:
                 return (min(g, N // g), max(g, N // g))
 
-            # V_{2k} = V_k² - 2 (for Q=1)
+            # V_{2k} = V_k2 - 2 (for Q=1)
             v = (v * v - 2) % N
 
         # Final check

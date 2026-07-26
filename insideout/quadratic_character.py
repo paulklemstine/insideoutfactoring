@@ -8,12 +8,12 @@ Mathematical core
 For N = p*q the Jacobi symbol (a/N) = (a/p)(a/q) is a multiplicative
 character.  By Euler's criterion:
 
-    a^((p-1)/2) ≡  (a/p)  mod p,     a^((q-1)/2) ≡  (a/q)  mod q.
+    a^((p-1)/2) ==  (a/p)  mod p,     a^((q-1)/2) ==  (a/q)  mod q.
 
 The four layers of the algorithm:
 
 1. **QR Ladder** — compute base^(2^k) mod N for k = 0, 1, 2, ...
-   and check gcd(base^(2^k) ± 1, N) at each step.  When v_2(p-1) ≠
+   and check gcd(base^(2^k) ± 1, N) at each step.  When v_2(p-1) !=
    v_2(q-1) and the base happens to lie in a 2-Sylow subgroup of one
    of the prime fields, the orbit hits 1 mod one prime but not the
    other, yielding a nontrivial square root of 1 and splitting N.
@@ -23,11 +23,11 @@ The four layers of the algorithm:
    other.  The value a^((N-1)/2) mod N is a CRT combination of the
    two Euler-criterion values; when it is neither +1 nor -1 mod N it
    is a nontrivial square root of 1 and gcd(a^((N-1)/2) ± 1, N) splits
-   N.  Probability of a useful mismatch per random sample ≈ 1/2.
+   N.  Probability of a useful mismatch per random sample ~= 1/2.
 
 3. **Smooth-exponent p±1 (workhorse)** — compute a^M mod N where
    M = 2^K 3^K 5^K ... p_K^K is a smooth exponent.  If p-1 | M then
-   a^M ≡ 1 mod p and gcd(a^M - 1, N) = p.  This is the classic p−1
+   a^M == 1 mod p and gcd(a^M - 1, N) = p.  This is the classic p−1
    method, here framed and seeded via quadratic-character information.
 
 4. **Pollard ρ** — standard fallback for remaining cases.
@@ -127,7 +127,7 @@ def _v2(n: int) -> int:
 # ---------------------------------------------------------------------------
 
 def _sqrt_one_split(N: int, x: int) -> tuple[int, int] | None:
-    """Given x with x² ≡ 1 mod N (nontrivial), attempt to split N.
+    """Given x with x2 == 1 mod N (nontrivial), attempt to split N.
 
     Returns a factor pair (p, q) with p*q = N and 1 < p <= q < N, or None
     if the split fails (x was trivial).
@@ -146,7 +146,7 @@ def _sqrt_one_split(N: int, x: int) -> tuple[int, int] | None:
 def _qr_ladder(N: int, base: int, max_k: int = 64) -> tuple[int, int] | None:
     """Compute the sequence base^(2^k) mod N and check for nontrivial sqrt(1).
 
-    At each step compute x ← x² mod N and check gcd(x ± 1, N).  The
+    At each step compute x ← x2 mod N and check gcd(x ± 1, N).  The
     orbit eventually reaches 1 mod N; the predecessor of 1 is a square
     root of 1, and if it is nontrivial we split N.
 
@@ -207,7 +207,7 @@ def _qr_ladder_divergence(N: int, base: int, max_k: int = 64) -> tuple[int, int]
 def _multi_base_qcd(N: int, bases: list[int] | None = None) -> tuple[int, int] | None:
     """Try the QR ladder on multiple small-prime bases.
 
-    For random p, q the probability that v_2(p-1) ≠ v_2(q-1) is 2/3.
+    For random p, q the probability that v_2(p-1) != v_2(q-1) is 2/3.
     When the valuations differ, a base in the 2-Sylow subgroup of one
     prime field (but not the other) yields a split.  We try many bases
     to maximise the chance of hitting such a case.
@@ -236,7 +236,7 @@ def _multi_base_qcd(N: int, bases: list[int] | None = None) -> tuple[int, int] |
 def _jacobi_sequence(N: int, max_samples: int = 200) -> tuple[int, int] | None:
     """Sample random a, detect Jacobi-symbol vs Euler-criterion mismatch.
 
-    For a ∈ (Z/NZ)* with (a/N) = -1 we know (a/p) = -(a/q).  The value
+    For a in (Z/NZ)* with (a/N) = -1 we know (a/p) = -(a/q).  The value
     a^((N-1)/2) mod N combines the two Euler-criterion values; when it
     is neither +1 nor -1 mod N it is a nontrivial square root of 1 and
     gcd(a^((N-1)/2) ± 1, N) splits N.
@@ -269,10 +269,10 @@ def _jacobi_sequence(N: int, max_samples: int = 200) -> tuple[int, int] | None:
 def _smooth_exponent_pm1(N: int, bound: int = 50000) -> tuple[int, int] | None:
     """Smooth-exponent p−1 method (workhorse).
 
-    Compute a^M mod N where M = ∏ p_i for all primes p_i ≤ bound,
+    Compute a^M mod N where M = prod p_i for all primes p_i <= bound,
     raising to each prime in turn and checking gcd(a^M - 1, N) after
     each step.  If p-1 | M for some prime factor p of N, then
-    a^M ≡ 1 mod p and gcd(a^M - 1, N) = p.
+    a^M == 1 mod p and gcd(a^M - 1, N) = p.
 
     Tries several bases to handle the case where both p-1 and q-1 are
     smooth (in which case a single base may give 1 mod N immediately).
@@ -304,7 +304,7 @@ def _smooth_exponent_pm1(N: int, bound: int = 50000) -> tuple[int, int] | None:
             if 1 < g < N:
                 return (g, N // g)
             if g == N:
-                # x ≡ 1 mod N; this base is exhausted, try the next
+                # x == 1 mod N; this base is exhausted, try the next
                 break
     return None
 

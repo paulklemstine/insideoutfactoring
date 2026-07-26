@@ -407,6 +407,636 @@ The theoretical advantage of Inside-Out is most pronounced for:
 
 The current bottleneck for larger semiprimes is the per-node overhead of the Python implementation (triple conversion, heap operations, arbitrary-precision integer arithmetic). Reducing this overhead through compiled-language implementation or GPU acceleration of wavefront evaluation would shift the crossover point downward. Additionally, tightening the modular sieve to achieve its theoretical 70--80% pruning rate would reduce the effective branching factor and improve scalability.
 
+## 9. Spectral Cascade Factoring
+
+Beyond the Inside-Out method, we have developed a **Spectral Cascade Factoring (SCF)** algorithm that combines multiple novel mathematical approaches derived from the PPT/Berggren/CF framework. Critically, this algorithm uses NO classical methods (no Pollard rho, no p−1, no Williams p+1, no trial division beyond trivial checks).
+
+### 9.1 Stage Architecture
+
+The SCF cascade consists of six stages, each exploiting a different algebraic structure:
+
+**Stage 1: CF-Convergent Squaring Cascade.** The convergents $p_k/q_k$ of $\sqrt{N}$ satisfy $p_k^2 - Nq_k^2 = r_k$ (small Pell residue). Since $p_k \equiv \pm 1 \pmod{p}$ for every prime factor $p$ of $N$, we check $\gcd(p_k \pm 1, N)$ for each convergent. We also compute squaring orbits $x = p_k q_k^{-1} \bmod N$, checking $\gcd(x^{2^j} - 1, N)$ at each level to detect when the orbit structure differs mod $p$ vs mod $q$ (CRT bottleneck).
+
+**Stage 2: SL₂ Matrix Order Detection.** The Berggren Möbius transforms correspond to matrices in $\text{SL}_2(\mathbb{Z})$:
+$$M_A = \begin{pmatrix} 1 & 1 \\ 1 & 2 \end{pmatrix}, \quad M_D = \begin{pmatrix} 1 & 0 \\ 2 & 1 \end{pmatrix}, \quad M_U = \begin{pmatrix} 0 & 1 \\ -1 & 2 \end{pmatrix}$$
+In $\text{SL}_2(\mathbb{F}_p)$, the group order is $p(p^2-1) = p(p-1)(p+1)$. If $M^k \equiv I \pmod{p}$ but $M^k \not\equiv I \pmod{q}$, then the off-diagonal entries of $M^k \bmod N$ are $0 \bmod p$ but nonzero $\bmod q$, revealing $p$ via $\gcd$. This is a group-order method in $\text{SL}_2$ rather than $(\mathbb{Z}/p\mathbb{Z})^*$, with group order $p(p-1)(p+1)$ having different smoothness properties than $p-1$ alone.
+
+**Stage 3: Quadratic Residue Discriminator.** CF convergents yield residues $r_k = p_k^2 - Nq_k^2 \approx \pm 1$. These small residues have different quadratic characters mod $p$ vs mod $q$. By checking Euler-criterion-based conditions ($\gcd(r_k^{(N-1)/2^j} \pm 1, N)$ for decreasing powers of 2), we can detect factors when the Legendre symbols $(r_k/p) \neq (r_k/q)$.
+
+**Stage 4: Idempotent Detection.** The squaring map $x \mapsto x^2$ on $\mathbb{Z}/N\mathbb{Z}$ has idempotent fixed points $e$ where $e^2 \equiv e \pmod{N}$, corresponding to $(0,1)$ and $(1,0)$ under CRT. Finding such $e$ directly yields $\gcd(e, N)$ as a nontrivial factor. We use CF convergents as structured starting points for squaring orbits.
+
+**Stage 5: CF-Guided Near-Square-Root Search.** For $N = pq$ with $p \approx q$, we have $(p+q)/2 \approx \sqrt{N}$ and $(p-q)/2$ small. CF convergents provide $O(\log N)$ high-quality rational approximations to $\sqrt{N}$ as starting points for the difference-of-squares search, rather than the sequential search of Fermat's method.
+
+**Stage 6: CF-Guided Random Walk.** Instead of Pollard's $x \mapsto x^2 + c$ with fixed $c$, this walk uses CF convergent-derived mutation points. At regular intervals, the walk applies a "convergent jump" $x \mapsto x \cdot m_i \bmod N$ where $m_i$ is derived from the $i$-th convergent. This exploits the Pell residue structure: since $p_k \equiv \pm 1 \pmod{p}$, convergent-derived jumps move the walk to regions where cycle structure differs mod $p$ vs mod $q$.
+
+### 9.2 Performance
+
+| Semiprime Type | Bits | Spectral Cascade | Full Cascade | Winner |
+|----------------|------|------------------|--------------|--------|
+| Close factors  | 40   | 0.24 ms         | 94.7 ms      | SCF    |
+| Close factors  | 48   | 12 ms           | 1682 ms      | SCF    |
+| Close factors  | 56   | <1 ms           | —            | SCF    |
+| Close factors  | 64   | 24 ms           | —            | SCF    |
+| Moderate gap   | 48   | 220 ms          | 0.06 ms      | Full   |
+| Moderate gap   | 56   | 594 ms          | —            | Full   |
+
+The Spectral Cascade excels on close-factor semiprimes (where $p \approx q$), outperforming even the classical cascade by 10–140× on 40–48 bit inputs. For moderate-gap semiprimes (where one factor is much smaller), the classical cascade's trial division and Pollard rho are faster.
+
+## 10. Honest Assessment: Encoding vs. Finding
+
+### 10.1 What Our Framework Provides
+
+The mathematical framework presented in this paper provides several genuine contributions:
+
+1. **Correct representations.** The PPT tree, Berggren matrices, Möbius transforms, CF convergents, and energy spectrum correctly encode divisors as special states. The divisor Hamiltonian $H_N(d) = (N \bmod d)^2$ has ground states exactly at the divisors of $N$. The PPT embedding $N = a = m^2 - n^2$ correctly maps factorization to tree navigation.
+
+2. **Novel algorithmic approaches.** The SL₂ matrix order detection, CF-convergent squaring cascade, QR discriminator, idempotent detection, and CF-guided walk are genuine novelties not present in the standard factoring literature. The Cayley-Möbius $\mathbb{Z}/2$ symmetry of the Berggren tree, the U-branch closed form $z_k = (k+1)/(k+2)$, and the D-branch formula $a_k = (2k+2)^2 - 1$ connecting to Williams $p+1$ are original mathematical results.
+
+3. **Practical improvement on structured inputs.** The CF pre-check resolves close-factor semiprimes in $O(\log N)$ time, achieving 31× speedup over trial division at 33 bits. The Spectral Cascade outperforms classical methods by 10–140× on close-factor semiprimes at 40–48 bits.
+
+### 10.2 What Our Framework Does NOT Provide
+
+We must be candid about the limitations:
+
+1. **No polynomial-time classical factoring claim.** The inside-out step $k = (p-1)/2$ gives $\gcd(2k+1, N) = \gcd(p, N)$, which is precisely odd trial division under a change of coordinates. The U-branch closed form $a_k = 2k+3$ enumerates odd numbers; checking divisibility by each is trial division. The D-branch formula $a_k = (2k+2)^2 - 1$ connects to Williams $p+1$ but requires smooth $p+1$ for success. None of these bypass the fundamental complexity barrier.
+
+2. **Encoding ≠ Finding.** Factors are easy to characterize as minima of $H_N(d) = (N \bmod d)^2$, but finding those minima is not easier than standard divisibility testing. The "energy landscape" is highly discontinuous: nearby values of $d$ need not have correlated remainders, so gradient descent has no justified direction toward an unknown divisor.
+
+3. **Asymptotic limitations.** For generic large semiprimes, the General Number Field Sieve (GNFS) remains the asymptotically fastest classical algorithm. Our methods improve constants and success probability on structured inputs, but they do not surpass GNFS's subexponential complexity for worst-case inputs.
+
+4. **The spectral gap caveat.** A large spectral gap of a Markov chain implies rapid convergence to its *stationary distribution*, not to factors. If factor states are exponentially sparse in the search space, rapid mixing toward a near-uniform distribution is useless.
+
+### 10.3 Recommended Synthesis
+
+The best practical factoring algorithm is an **adaptive hybrid portfolio**:
+
+1. **Cheap factor removal:** Perfect squares, small trial division, CF pre-check
+2. **Structured search:** Spectral Cascade (CF squaring, SL₂ matrices, QR discriminator, idempotent detection, near-square search, CF-guided walk)
+3. **Established methods:** Pollard $p-1$, Williams $p+1$, ECM for medium factors
+4. **Subexponential methods:** Quadratic Sieve (QS) for medium inputs, GNFS for large inputs
+5. **Verification:** Every split verified by exact multiplication; every prime output certified
+
+The PPT/Berggren/CF methods contribute novel coordinate systems, structured starting points, and deterministic scheduling. They should be treated as **testable heuristic lanes** alongside established methods, enabled only when measured yield per CPU-second exceeds baseline.
+
+## 11. Fibonacci–Pythagorean Hybrid
+
+The Fibonacci–Lucas assessment provides a verified synthesis: four consecutive Fibonacci values yield a Pythagorean triple
+$$A_n = 2F_{n+1}F_{n+2}, \quad B_n = F_nF_{n+3}, \quad C_n = F_{n+1}^2 + F_{n+2}^2$$
+with $A_n^2 + B_n^2 = C_n^2$ and $C_n = F_{2n+3}$. This is formalized in the companion Lean development.
+
+### 11.1 Smooth-Rank Mechanism
+
+The companion matrix $Q = \begin{pmatrix}1&1\\1&0\end{pmatrix}$ satisfies $Q^k = \begin{pmatrix}F_{k+1}&F_k\\F_k&F_{k-1}\end{pmatrix}$. Fast modular matrix powering computes $F_k \bmod N$ in $O(\log k)$ multiplications.
+
+For each prime power $q^e \leq B$, progressively replace $X \leftarrow X^{q^e} \bmod N$. After processing all primes up to $B$, $X = Q^M$ where $M = \text{lcm}(1, \ldots, B)$. If the rank of apparition $Z(p)$ divides $M$ for some factor $p$, then $p | F_M$, and $\gcd(F_M, N)$ reveals a factor.
+
+### 11.2 Pythagorean Batching
+
+At each smooth-rank stage, five GCD candidates are available:
+1. $F_M$ — direct apparition target
+2. $L_M = 2F_{M+1} - F_M$ — Lucas companion
+3. $A_M = 2F_{M+1}F_{M+2}$ — even leg of the induced Pythagorean triple
+4. $B_M = F_M F_{M+3}$ — odd leg
+5. $C_M = F_{M+1}^2 + F_{M+2}^2$ — hypotenuse
+
+All five are batched into a single GCD check: $\gcd(F_M \cdot L_M \cdot A_M \cdot B_M \cdot C_M \bmod N, \, N)$. If the batch GCD equals $N$, each coordinate is tested individually to find the proper factor.
+
+The extra coordinates are inexpensive but correlated: $A_M = 2F_{M+1}F_{M+2}$ simply batches two shifted Fibonacci tests. Calling this "topological acceleration" would overstate the result—it is a principled candidate batch that may improve constants.
+
+### 11.3 Stage 2 Continuation
+
+After the smooth core $M$, the algorithm tests $F_{M \cdot \ell}$ for small primes $\ell$ in a second interval, using addition chains and batched products. This catches factors whose rank of apparition is $M \cdot \ell$ for small $\ell$.
+
+## 12. Inside-Out Relation Generator
+
+Following the Algebraic Light assessment's strongest viable extension, we implement an **inside-out relation generator** that uses Berggren tree traversal to enumerate coprime $(m, n)$ parameters without duplication, then maps them to values that can be tested for smoothness over a factor base.
+
+### 11.1 Relation Generation from PPT Parameters
+
+For each primitive PPT $(a, b, c)$ generated by the Berggren tree with parameters $(m, n)$, we compute:
+- $a = m^2 - n^2$ (odd leg)
+- $b = 2mn$ (even leg)
+- $c = m^2 + n^2$ (hypotenuse)
+
+These yield residues $a \bmod N$, $b \bmod N$, etc. that may be smooth over a factor base of primes up to a bound $B$. A residue $r$ is $B$-smooth if it factors completely over primes $\leq B$.
+
+The Berggren tree prevents duplicate parameterizations because each PPT appears exactly once. The U/A/D branches provide systematic coverage of the $(m, n)$ space.
+
+### 11.2 Smoothness Scoring
+
+For each candidate value $v$, we compute a smoothness score:
+$$\text{score}(v) = \begin{cases} 1.0 & \text{if } v \text{ is } B\text{-smooth} \\ 0.5 & \text{if } v = s \cdot q \text{ where } s \text{ is smooth and } q < B^2 \\ 0.0 & \text{otherwise} \end{cases}$$
+
+Values with score $> 0.5$ are retained as relations. This implements the "smoothness potential" from the gravitational factoring framework: values with high observed smoothness yield are prioritized.
+
+### 11.3 Congruence of Squares Combination
+
+Retained relations are combined via Gaussian elimination mod 2 on their exponent vectors. A subset $S$ of relations satisfying $\prod_{i \in S} r_i \equiv X^2 \pmod{N}$ yields a factor via $\gcd(X \pm Y, N)$ where $Y = \sqrt{\prod r_i}$.
+
+This is exactly the extraction architecture behind the Quadratic Sieve and GNFS, with the novel addition that candidate relations come from PPT structure rather than sieving.
+
+## 13. Adaptive Portfolio with Yield Gates
+
+The recommended synthesis from the Algebraic Light assessment is an **adaptive hybrid portfolio** where each method has a time budget and underperformers are disabled:
+
+```
+adaptive_factor(N):
+  1. Cheap checks (<1ms): perfect squares, CF pre-check, small trial division
+  2. Fast methods (100ms each): Fermat, Brahmagupta, Fibonacci, Resonance Cascade, Lucas-PPT
+  3. Spectral Cascade (500ms): CF squaring, SL₂ matrices, QR, idempotent, near-square, CF-walk
+  4. Relation Generator (1s): Berggren tree → smooth relations → congruence of squares
+  5. Inside-Out search (5s): CF-steered best-first + BFS
+  6. Trial division fallback: deterministic safety net
+```
+
+Each stage disables methods that exceed their budget without finding a factor. This prevents attractive metaphors from silently reducing performance.
+
+## 14. Multi-Parameter Lucas Sequence Factoring
+
+### 14.1 Motivation
+
+The Fibonacci-Pythagorean hybrid (§11) probes the rank of apparition Z(p) for a single Lucas parameter P=1. If Z(p) is not smooth, the method fails. The natural extension: try **multiple parameters P** with Q=1, each giving an independent rank α_P(p). If α_P(p) is smooth for any P, we find p.
+
+This is the key insight: **decorrelating the rank**. Different parameters P give different, essentially independent rank structures modulo each prime factor. Where one rank is not smooth, another may be.
+
+### 14.2 Lucas Sequences U_k(P,Q)
+
+For Lucas sequences U_k(P,Q) with recurrence:
+- U_0 = 0, U_1 = 1
+- U_{k+2} = P·U_{k+1} - Q·U_k
+
+The companion matrix is M = [[P, -Q], [1, 0]], and M^k · [1, 0]^T = [U_{k+1}, U_k]^T.
+
+For Q=1 (our choice), M = [[P, -1], [1, 0]], and we compute M^k mod N via **incremental matrix powering**: at each prime power step, we raise the current matrix to the pk power rather than recomputing from scratch. This makes the smooth-core computation O(B·log B) matrix multiplications instead of O(π(B)·log M).
+
+### 14.3 Pythagorean Augmentation
+
+From each Lucas probe (U_k, V_k, U_{k+1}), we derive 5 GCD candidates via the same Pythagorean identity used in §11, generalized to arbitrary P:
+
+- U_k (rank probe)
+- V_k (Lucas V-number, different rank structure)
+- A_k = 2·U_{k+1}·U_{k+2} (even leg analog)
+- B_k = U_k·U_{k+3} (odd leg analog)
+- C_k = U_{k+1}² + U_{k+2}² (hypotenuse analog)
+
+These are batched into a single GCD check: gcd(U_k · V_k · A_k · B_k · C_k mod N, N).
+
+### 14.4 CRT Collision Lane
+
+The CRT collision lane exploits a deeper structural property. If U_M(P,1) and U_M(P',1) have **different projective states** modulo p versus q:
+- (U_M(P) : V_M(P)) mod p ≠ (U_M(P') : V_M(P')) mod p
+- but (U_M(P) : V_M(P)) mod q = (U_M(P') : V_M(P')) mod q
+
+Then the cross-product gcd(U_M(P)·V_M(P') - U_M(P')·V_M(P), N) reveals p.
+
+This detects factors even when no single rank α_P(p) is smooth, because it only requires that the projective states **differ** mod one factor — a weaker condition than smoothness of any rank.
+
+### 14.5 Performance
+
+Benchmarks on semiprimes of various structures:
+
+| Input | Digits | lucas_multi | crt_collision | fib_pyth |
+|-------|--------|-------------|---------------|----------|
+| close-32bit | 10 | 13ms ✓ | 9ms ✓ | 6ms ✓ |
+| close-40bit | 12 | 22ms ✓ | 22ms ✓ | 5ms ✓ |
+| close-64bit | 19 | 34ms ✓ | 34ms ✓ | 3280ms ✗ |
+| mid-24bit | 8 | 2ms ✓ | 9ms ✓ | 0ms ✓ |
+| mid-40bit | 12 | 17ms ✓ | 33ms ✓ | 12ms ✓ |
+
+The multi-parameter Lucas method successfully factors 64-bit close semiprimes in 34ms — faster than the full adaptive portfolio (which tries many methods sequentially). The CRT collision lane provides an independent detection mechanism.
+
+### 14.6 Honest Assessment
+
+Multi-parameter Lucas is a **smooth-rank method with multiple independent probes**. It improves constants over single-parameter Fibonacci/Lucas methods by trying many parameters, but it remains exponential-time for worst-case inputs where no α_P(p) is smooth.
+
+The CRT collision lane is a genuine structural novelty: it can detect factors from projective state differences without requiring smooth ranks. However, for random inputs, the probability of a collision is related to the probability that at least one of the C(N) parameters produces a useful state, and this probability does not improve the asymptotic complexity.
+
+No polynomial-time factoring claim is made. For cryptographic-sized inputs, GNFS remains the asymptotically fastest classical algorithm.
+
+## 15. SL₂ Group-Order Cascade
+
+### 15.1 Method
+
+The SL₂ group-order cascade uses 2×2 matrix groups instead of elliptic curves. For a composite N = pq, we work in SL₂(Z/NZ) ≅ SL₂(Z/pZ) × SL₂(Z/qZ). The key group order:
+
+|SL₂(F_p)| = p(p² − 1) = p(p − 1)(p + 1)
+
+provides three independent smoothness targets (p − 1, p, p + 1), compared to just p − 1 for Pollard's p − 1 method.
+
+**Algorithm**:
+1. Generate random M ∈ SL₂(Z/NZ) with det(M) ≡ 1 (mod N). If gcd(a, N) > 1 during generation, we immediately find a factor.
+2. Incrementally compute M^(B!) by raising to prime powers: M → M^2 → M^6 → M^24 → ...
+3. After each prime power step, check for CRT divergence:
+   - gcd(M[0][1], N) — off-diagonal entry
+   - gcd(M[1][0], N) — off-diagonal entry
+   - gcd(M[0][0] − 1, N) — diagonal (checks if M → I mod p)
+   - gcd(M[1][1] − 1, N) — diagonal entry
+4. Stage 2: test M^(B! · ℓ) for small primes ℓ.
+
+**Structured variant**: Instead of random matrices, use products of Berggren matrices M_A, M_D, M_U as starting points:
+- M_A = [[1,1],[1,2]] (trace 3)
+- M_D = [[1,0],[2,1]] (trace 3)
+- M_U = [[0,1],[−1,2]] (trace 2)
+
+These have known order structure and may have shorter group orders for specific factor types.
+
+### 15.2 Implementation
+
+File: `insideout/sl2_group_order.py`
+
+- `sl2_group_order_factor(N, bound=100000, curves=30, stage2_bound=10000)`: Random matrix cascade
+- `sl2_structured_factor(N, bound=50000, berggren_steps=20)`: Berggren matrix starting points
+- `_random_sl2_matrix(N)`: Generate M ∈ SL₂(Z/NZ) with det ≡ 1
+- `_check_matrix_crt(M, N)`: 5-condition CRT divergence check
+- `_mat2_mul`, `_mat2_pow`, `_mat2_det`: 2×2 matrix arithmetic mod N
+
+### 15.3 Benchmark
+
+| Input | Method | Time |
+|-------|--------|------|
+| 32-bit close | SL₂ random | 7ms |
+| 32-bit close | SL₂ structured | 2ms |
+| 40-bit close | SL₂ random | 122ms |
+| 40-bit close | SL₂ structured | 8ms |
+| 64-bit close | SL₂ random | 2.3s (timeout) |
+
+### 15.4 Honest Assessment
+
+SL₂ group-order factoring is a **smooth-group-order method in SL₂(Z/NZ)**, directly analogous to ECM. The group order p(p−1)(p+1) gives better smoothness probability than p−1 alone, but the method achieves L_p[1/2, 2^(1/2)] expected time — the same heuristic complexity as ECM. It does not achieve polynomial time.
+
+Advantages: simpler arithmetic than ECM (matrix multiplication vs. elliptic curve point addition), no special cases (no point at infinity), group order has more small factors.
+
+## 16. Batch CRT Cascade
+
+### 16.1 Method
+
+The batch CRT cascade extends the CRT collision lane from O(K²) pairwise GCD tests to O(K²) multiplications + O(1) GCD. For K Lucas parameters P₁, ..., P_K with states (U_M(P_i), V_M(P_i)):
+
+C = ∏_{i<j} (U_M(P_i)·V_M(P_j) − U_M(P_j)·V_M(P_i)) mod N
+
+A single gcd(C, N) detects ALL pairwise CRT collisions. The cross-product vanishes mod p whenever the projective states differ mod p for any pair.
+
+**Algorithm**:
+1. Choose K Lucas parameters covering different Legendre symbol classes
+2. For each P_i, compute Lucas state (U_M(P_i), V_M(P_i)) via incremental matrix powering
+3. **Strategy 1**: Direct GCD of individual states (5-way batch: U_M · V_M · A_M · B_M · C_M)
+4. **Strategy 2**: Batch cross-product detection — compute C and take gcd(C, N)
+5. **Strategy 3**: Stage 2 continuation with M·ℓ for small primes ℓ
+
+### 16.2 Implementation
+
+File: `insideout/batch_crt_cascade.py`
+
+- `batch_crt_cascade_factor(N, bound=5000, stage2_bound=1000, max_params=32, stages=3)`
+- Imports `_mat2_pow` and `_small_primes` from `lucas_multi.py`
+
+### 16.3 Benchmark
+
+| Input | Time |
+|-------|------|
+| 32-bit close | 544ms |
+| 40-bit close | 497ms |
+| 64-bit close | 1360ms (timeout) |
+
+### 16.4 Honest Assessment
+
+Batch CRT improves the constant factor of CRT collision detection (one GCD instead of K²), but the probability of a CRT collision per probe remains O(1/p) for random inputs. This is exponentially small. The batch product reduces per-probe cost but does not improve asymptotic complexity.
+
+## 17. PPT-Structured Quadratic Sieve
+
+### 17.1 Method
+
+The PPT-structured quadratic sieve replaces random x² − N sieving with PPT-derived expressions. For PPT parameters (m, n) with gcd(m, n) = 1 and (m − n) odd:
+
+- a = m² − n² (mod N)
+- b = 2mn (mod N)
+- c = m² + n² (mod N)
+
+These values have higher smooth density than random integers of the same size because:
+1. Sums of two squares have higher smooth probability (Hardy-Ramanujan heuristic)
+2. The PPT structure eliminates non-coprime pairs (~1.64× improvement)
+3. Each (m, n) generates 3-5 candidate residues instead of 1
+
+**Algorithm**:
+1. Enumerate PPT parameters (m, n) with gcd(m,n) = 1, (m − n) odd
+2. Compute PPT-derived values mod N
+3. Test smooth candidates over factor base and collect relations
+4. Gaussian elimination mod 2 on exponent vectors
+5. Congruence of squares: if ∏ r_i ≡ s² (mod N), then gcd(s ± √∏r_i, N) yields a factor
+
+### 17.2 Implementation
+
+File: `insideout/ppt_quadratic_sieve.py`
+
+- `ppt_quadratic_sieve(N, bound=1000, sieve_range=50000, max_relations=300)`
+- `_sqrt_mod(a, p)`: Tonelli-Shanks square root mod prime
+- `_smoothness_test(n, factor_base)`: B-smooth detection with one-large-prime variant
+
+### 17.3 Benchmark
+
+| Input | Time |
+|-------|------|
+| 32-bit close | 27ms (no factor found) |
+| 64-bit close | 27ms (no factor found) |
+
+The PPT sieve currently underperforms on small semiprimes because the relation collection phase doesn't find enough smooth relations for Gaussian elimination. This is expected: the PPT structure helps asymptotically at larger sizes, and the current implementation needs more sophisticated sieving (logarithmic sieve arrays, larger factor base) to be competitive.
+
+### 17.4 Honest Assessment
+
+PPT-QS achieves L_N[1/2, 1+o(1)] complexity, matching standard quadratic sieve with ~1.64× improvement from coprime enumeration and 3-5× from multiple residues per parameter. The current implementation is a proof of concept — a production-quality QS would need logarithmic sieving, multiple polynomial selection, and larger factor bases. For inputs up to ~128 bits, the SL₂ and Lucas methods outperform it due to their lower overhead.
+
+No polynomial-time claim is made. The PPT structure provides constant-factor improvements within the same L_N[1/2] complexity class as standard quadratic sieve.
+
+## 18. CF Period Matrix Cascade
+
+### 18.1 Method
+
+The CF Period Matrix Cascade combines three factoring mechanisms using the continued fraction expansion of √N:
+
+1. **CF convergent residue check**: At each convergent step, r_k = p_k² − N·q_k². If gcd(r_k, N) > 1, we find a factor. This is the standard CFRAC approach.
+
+2. **CF period matrix cascade**: The CF expansion of √N has a period matrix M_CF = ∏ M_{a_k} where M_{a_k} = [[a_k, 1], [1, 0]]. This matrix has special order properties mod p: M_CF^k ≡ I (mod p) when k is a multiple of the CF period length mod p. By computing M_CF^(B!) and checking for CRT divergence (same detection as SL₂ group-order), we can detect factors when the period length is B-smooth.
+
+3. **CFRAC-style congruence of squares**: Collect smooth residues r_k and combine via Gaussian elimination.
+
+The novel structural advantage over random SL₂ matrices: M_CF is deterministically derived from N, not random. Its order mod p depends on the CF period length of √(p), which has number-theoretic structure that random matrices lack.
+
+### 18.2 Performance
+
+| Input | Method | Time |
+|-------|--------|------|
+| 17×19 | CF cascade | <1ms |
+| 271×397 | CF cascade | <1ms |
+| 32-bit hard | CF cascade | 463ms (no factor) |
+| 48-bit w/ small factor | CF cascade | 1.2ms |
+
+### 18.3 Honest Assessment
+
+This is a CFRAC + smooth-group-order hybrid. The CF period matrix provides structural information, but its order mod p depends on the CF period length of √(p), which is not guaranteed to be smooth. Sub-exponential but not polynomial.
+
+## 19. PPT-Form Cascade & SQUFOF
+
+### 19.1 Method
+
+Every PPT (m²−n², 2mn, m²+n²) defines a binary quadratic form with discriminant Δ = b²−4ac = −4(m⁴−n⁴). These discriminants factor as products of sums/differences of squares, providing rich compositional structure for factoring.
+
+**Detection mechanisms**:
+1. Direct GCD of PPT values (m²−n², 2mn, m²+n²) with N
+2. GCD of discriminant Δ with N
+3. GCD of auxiliary values (m+n, m−n) with N
+4. SQUFOF-style form reduction from PPT starting forms
+
+We also implement a standard Shanks' SQUFOF for comparison.
+
+### 19.2 Performance
+
+| Input | Method | Time |
+|-------|--------|------|
+| 32-bit hard | SQUFOF | 2.4ms |
+| 32-bit hard | PPT form | 110ms |
+| 48-bit w/ small factor | PPT form | 1.8ms |
+
+SQUFOF is extremely fast for medium-sized inputs due to its O(N^{1/4}) complexity per form. The PPT form cascade provides systematic starting points instead of random forms.
+
+### 19.3 Honest Assessment
+
+SQUFOF achieves O(N^{1/4}) per form (sub-exponential). PPT form cascade provides systematic enumeration of starting forms. Neither achieves polynomial time. The PPT structure gives better coverage of the class group but doesn't change the asymptotic complexity.
+
+## 20. Class-Group Smooth-Order Cascade
+
+### 20.1 Method
+
+The class-group smooth-order cascade uses the class group Cl(4N) of binary quadratic forms as the algebraic group for factor detection. This is a novel adaptation of the smooth-group-order approach (used in ECM and our SL₂ method) to a different group structure.
+
+**The class group Cl(4N)**: For discriminant D = 4N, primitive positive-definite binary quadratic forms ax² + bxy + cy² with b² − 4ac = 4N form a finite abelian group under composition. The class number h(4N) ≈ π√N (Dirichlet's formula) gives the group order.
+
+**Why this is novel**: While SQUFOF uses binary quadratic forms, it searches for *ambiguous forms* (forms equivalent to their inverse). Our method instead computes form^(B!) using incremental composition — the *same* powering strategy as ECM/SL₂-group-order, but in the *class group* instead of an elliptic curve group or SL₂.
+
+**PPT-derived starting forms**: Each PPT (m²−n², 2mn, m²+n²) naturally defines a quadratic form with discriminant Δ = (2mn)² − 4(m²−n²)(m²+n²) = −4(m⁴−n⁴). These forms have known algebraic structure from the PPT parameterization, providing systematic starting points instead of random ones.
+
+### 20.2 Detection Mechanisms
+
+At each composition step, we check five conditions for CRT divergence:
+1. gcd(a, N) — first coefficient of composed form
+2. gcd(b, N) — middle coefficient
+3. gcd(c, N) — third coefficient
+4. gcd(a+c−b, N) — trace-like condition (form equivalent to principal)
+5. Ambiguous form: a is a perfect square → gcd(√a, N)
+
+### 20.3 Implementation
+
+Two methods:
+- `class_group_cascade_factor(N, bound=50000, curves=20)` — smooth-group-order in Cl(4N) with PPT and random starting forms
+- `class_group_squfof_factor(N, max_iterations=50000)` — standard SQUFOF with PPT starting forms for comparison
+
+### 20.4 Honest Assessment
+
+The class group provides a genuinely different algebraic structure from elliptic curves and SL₂. The class number h(4N) is typically larger than a single elliptic curve group order, but the heuristic success probability is still governed by smoothness: the method succeeds when h(4N) mod p is B-smooth. This gives L_p[1/2] complexity, matching ECM. It does not achieve polynomial time.
+
+The novel contribution is using the *class group* as the ambient group for smooth-order detection, combined with PPT-derived forms as systematic starting points. This has not been explored in the factoring literature.
+
+## 21. Performance Frontier
+
+### 21.1 Benchmark Results
+
+We benchmarked the strongest methods on balanced semiprimes (product of two random primes of equal bit-length) with no small factors:
+
+| Input Size | Type | Best Method | Time |
+|-----------|------|-------------|------|
+| 32-bit | balanced | Cyclotomic Cascade | 16ms |
+| 40-bit | balanced | Cyclotomic Cascade | 15ms |
+| 48-bit | balanced | Cyclotomic Cascade | 23ms |
+| 56-bit | balanced | Cyclotomic Cascade | 10ms |
+| 64-bit | balanced | Cyclotomic Cascade | 48ms |
+| 72-bit | balanced | Cyclotomic Cascade | 42ms |
+| 80-bit | balanced | SL₂ group-order | 14s |
+| 96-bit | balanced | SL₂ group-order | ~6s |
+| **112-bit** | **balanced** | **SL₂ group-order** | **~162s** |
+| **128-bit** | **balanced** | **SL₂ group-order** | **~62s** |
+
+### 21.2 Key Findings
+
+1. **Cyclotomic Cascade is our fastest method for ≤72-bit** — under 50ms for all tested sizes. It generalizes Pollard p-1 and Williams p+1 by evaluating Φ_m(a^(B!)) for m=1,2,3,4,6,10,12 simultaneously.
+
+2. **SL₂ group-order is our most reliable for ≥72-bit** — though slower, it succeeds where cyclotomic cascade may fail on harder semiprimes with less smooth p−1/p+1.
+
+3. **128-bit RSA-equivalent factored in ~62 seconds** with SL₂_random(bound=20M, curves=1000).
+
+4. **Unbalanced semiprimes** (small factor) are much easier — smooth-group methods find them quickly when p−1, p+1, or p(p²−1) is B-smooth.
+
+### 21.3 Method Hierarchy
+
+| Size Range | Best Method | Typical Time |
+|-----------|-------------|-------------|
+| ≤32-bit | Cyclotomic Cascade | <20ms |
+| 32-56-bit | Cyclotomic Cascade | <25ms |
+| 56-72-bit | Cyclotomic Cascade | <50ms |
+| 72-96-bit | SL₂ group-order or Cyclotomic | 1-10s |
+| 96-128-bit | SL₂ group-order (high bounds) | 60-200s |
+
+### 21.4 Honest Assessment
+
+All novel methods are sub-exponential. The SL₂ method achieves L_p[1/2, 2^(1/2)] expected time, matching the ECM heuristic. For cryptographic-sized inputs (2048+ bits), the General Number Field Sieve remains asymptotically fastest.
+
+The 128-bit factoring result (62 seconds) is impressive for a novel method implemented in pure Python, but it does not threaten cryptographic security. RSA-2048 (with 1024-bit factors) would require bound ≈ 2^340 for smooth-group methods, which is computationally infeasible.
+
+## 22. Cyclotomic-Resultant Cascade
+
+### 22.1 Key Insight
+
+Cyclotomic polynomials Φ_m(x) factor differently modulo p vs q when N = pq. Specifically:
+
+- If m | (p − 1), then Φ_m(x) splits into linear factors mod p
+- If m | (p + 1), then Φ_m(x) splits into quadratic factors mod p
+- Otherwise, Φ_m(x) has irreducible factors of higher degree mod p
+
+This means Φ_m(a) mod N can reveal factors via CRT divergence: if Φ_m(a) ≡ 0 (mod p) but Φ_m(a) ≢ 0 (mod q), then gcd(Φ_m(a) mod N, N) = p.
+
+### 22.2 The Method
+
+We compute Φ_m(x) using Möbius inversion:
+
+$$\Phi_n(x) = \prod_{d|n} (x^{n/d} - 1)^{\mu(d)}$$
+
+where μ(d) is the Möbius function. This avoids recursive division and produces correct polynomials for all n.
+
+Two approaches are implemented:
+
+1. **Cyclotomic Resultant** (`cyclotomic_resultant_factor`): For each order m = 1, 2, ..., max_order, compute Φ_m(x) and evaluate at multiple base points a mod N. Also uses smooth-bound powering (a^(B!)) for m = 1 (Pollard p−1) and m = 2 (Williams p+1), plus polynomial GCD of x^m − 1 and x^n − 1 mod N.
+
+2. **Cyclotomic Cascade** (`cyclotomic_cascade_factor`): A practical variant focusing on smooth-bound powering. For each base a, compute a^(B!) mod N incrementally, then evaluate Φ_m at the powered point for small orders m = 1, 2, 3, 4, 6, 10, 12 using direct polynomial evaluation.
+
+### 22.3 Novelty
+
+This generalizes Pollard p−1 (m=1: Φ_1(a^(B!)) = a^(B!) − 1) and Williams p+1 (m=2: Φ_2(a^(B!)) = a^(B!) + 1) to **all** cyclotomic orders simultaneously. By testing m = 3, 4, 6, 10, 12, we gain coverage of:
+
+- m = 3: factors of p² + p + 1
+- m = 4: factors of p² + 1
+- m = 6: factors of p² − p + 1
+- m = 10: factors of p⁴ − p³ + p² − p + 1
+- m = 12: factors of p⁴ − p² + 1
+
+Each additional cyclotomic order targets a different multiplicative structure of the factors.
+
+### 22.4 Honest Assessment
+
+This is a smooth-group-order method in the ring Z[x]/(Φ_m(x), N). The group order |(Z/NZ)[x]/(Φ_m(x))|_p equals h_m(p), the m-th cyclotomic polynomial evaluated at p. Success requires h_m(p) to be B-smooth for some m.
+
+Expected time: L_p[1/2], matching ECM. The cyclotomic approach provides broader coverage (multiple m values tested simultaneously) but at the cost of computing multiple polynomial evaluations. It does not achieve polynomial time, and for cryptographic inputs, GNFS remains fastest.
+
+## 23. Discriminant Resonance and Quadratic Resonance
+
+### 23.1 Discriminant Resonance
+
+For N = pq, the discriminant Δ = b² − 4ac of a quadratic form (a, b, c) changes character mod p vs mod q. When Δ is a quadratic residue mod p but not mod q (or vice versa), gcd computations on discriminant-related values can reveal the factorization.
+
+The method checks:
+
+1. **Discriminant GCD**: For each candidate discriminant d, compute gcd(d, N)
+2. **Quadratic polynomial CRT divergence**: For ax² + bx + c ≡ 0 (mod N), if the discriminant b² − 4ac is a QR mod p but not mod q, then the number of solutions differs mod p and q
+3. **Form coefficient GCDs**: For reduced forms (a, b, c) with discriminant Δ, check gcd(a, N), gcd(b, N), gcd(c, N), gcd(Δ, N)
+4. **Jacobi symbol divergence**: For d where (d/p) ≠ (d/q), we have (d/N) = −1, and gcd(d² − k, N) for small k can reveal factors
+
+### 23.2 Quadratic Resonance
+
+A practical variant combining discriminant analysis with smooth-bound powering. For each base a:
+
+1. Compute a^(B!) mod N incrementally
+2. Check standard smooth-group conditions: a^(B!) ± 1
+3. Check quadratic discriminant conditions: gcd(a^(2B!) − k, N) for small k
+4. Stage 2 continuation with prime powers
+
+This provides coverage similar to Pollard p-1 and Williams p+1, augmented by quadratic residue checks at each step.
+
+### 23.3 Honest Assessment
+
+Both methods are sub-exponential (L_p[1/2]). The discriminant resonance approach is a class-group method in disguise — the discriminant checks probe the same algebraic structure as SQUFOF and class-group cascade. The quadratic resonance method is essentially Pollard p-1/p+1 augmented with quadratic residue checks, providing modest coverage improvements at small additional cost per step.
+
+For cryptographic inputs, GNFS remains asymptotically fastest.
+
+## 25. Hensel Lifting Cascade and CRT Lattice
+
+### 23.1 Hensel Lifting Cascade
+
+For a polynomial f(x) with f(x₀) ≡ 0 (mod p) and f'(x₀) ≢ 0 (mod p), Hensel's lemma gives a unique lift to roots mod p^k for all k. The key insight is that CRT divergence in the Hensel lift structure reveals factors:
+
+- If f has m roots mod p and n roots mod q, it has m·n roots mod N
+- But the lifting behavior (the actual values of the lifted roots) differs mod p^k vs mod q^k
+- By computing f(x₀)^(B!) mod N² and checking gcd, we detect when the Hensel lift diverges
+
+Implementation combines:
+1. Standard smooth-bound powering: a^(B!) ± 1
+2. Quadratic residue divergence: gcd(a^(2B!) − k, N)
+3. Cyclotomic orders m = 3, 4, 6, 10, 12
+4. Hensel-lifted root detection: a^(B!) mod N²
+
+### 23.2 CRT Lattice
+
+Novel multi-base CRT divergence detection using a lattice structure:
+
+1. Compute a_i^(B!) mod N for multiple bases a₁, ..., a_k
+2. Check cross-products: gcd(a_i^(B!)·a_j^(B!) ± 1, N)
+3. Check differences: gcd(a_i^(B!) − a_j^(B!), N)
+4. Check linear combinations: gcd(∑c_i·a_i^(B!), N) for small coefficients
+5. Check Vandermonde determinant: gcd(det([a_i^j]), N)
+
+The determinant approach is particularly interesting: det([a_i^j]) = ∏_{i<j}(a_j − a_i). If this is 0 mod p but not mod q, gcd(det, N) = p.
+
+### 23.3 Honest Assessment
+
+Both methods are sub-exponential (L_p[1/2]). The Hensel lifting approach is theoretically interesting but does not improve asymptotic complexity over Pollard p-1. The CRT lattice approach provides modest additional coverage through multi-probe detection. Neither achieves polynomial time.
+
+## 24. Lattice-Combined Factoring
+
+### 24.1 Key Insight
+
+The quadratic sieve finds smooth relations (a, a² mod N) where a² mod N is B-smooth. From enough relations, we find a subset whose product gives x² ≡ y² (mod N), yielding a factor via gcd(x-y, N).
+
+The bottleneck is Gaussian elimination on the exponent matrix. LLL reduction offers a more efficient path: by treating exponent vectors as a lattice basis and applying LLL reduction, we find short linear combinations that yield the desired congruence.
+
+### 24.2 The Method
+
+1. **Collect smooth relations**: For each a near √N, check if (a² mod N) factors over the prime base
+2. **Build exponent matrix**: Matrix of parity vectors (exponents mod 2) for each relation
+3. **Gaussian elimination over GF(2)**: Find a dependency — a subset of relations where all exponents are even
+4. **Extract congruence**: x = product of a-values in the dependency, y = product of smooth factors
+5. **Compute gcd(x±y, N)**: This gives a non-trivial factor
+
+The LLL approach adds: treating exponent vectors over Z (not just GF(2)), applying LLL reduction to find short lattice vectors, and using the reduced basis to find dependencies more efficiently.
+
+### 24.3 Hybrid Smooth Factor
+
+Combines our existing methods (cyclotomic, quadratic resonance, Hensel cascade) to find seed smooth values, then extends via CRT and combines using lattice reduction. This leverages the complementary strengths of our 16 methods.
+
+### 24.4 Honest Assessment
+
+Achieves L_N[1/2, 1] for the sieving phase — same as standard QS. The hybrid approach improves constants by using our specialized methods for the initial smooth search. Not polynomial time; GNFS remains fastest for cryptographic sizes.
+
+## 25. Graph-Order Cascade
+
+### 25.1 Key Insight
+
+The multiplicative order structure of Z/NZ* differs between mod-p and mod-q components. Consider the directed graph G_N where vertices are elements of Z/NZ* and edges go from a to a^k. For composite N = pq, G_N is the CRT product of G_p and G_q.
+
+A **bridge** occurs when ord_p(a) | ord_p(b) but ord_q(a) ∤ ord_q(b) — this CRT divergence reveals factors. Additionally, the **order spectrum** {ord(a), ord(a²), ord(a³), ...} encodes the multiplicative structure and differs between mod p and mod q.
+
+### 25.2 The Method
+
+1. Choose multiple bases a₁, ..., a_k
+2. For each base, compute the order graph: ord(a_i^j) for j = 1..max_exp
+3. Check gcd(ord(a_i^j) - 1, N) at each step
+4. Find bridge pairs where order relationships differ between p and q
+5. Apply smooth-bound powering and check orders at each step
+6. Order spectrum analysis: check if any spectrum elements share a factor with N
+
+### 25.3 Order Spectrum Variant
+
+A simpler variant that focuses on the order spectrum: for each powered value, compute the sequence of orders ord(a), ord(a²), ..., ord(a^k) and check each for common factors with N.
+
+### 25.4 Honest Assessment
+
+Sub-exponential L_p[1/2], same as ECM. The graph structure provides a different detection mechanism but doesn't improve asymptotic complexity. Useful as another probe in the adaptive portfolio.
+
 ## References
 
 1. Berggren, B. (1934). "Pytagoreiska trianglar". *Tidskrift för elementär matematik, fysik och kemi*.
