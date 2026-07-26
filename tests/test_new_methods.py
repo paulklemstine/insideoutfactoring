@@ -260,14 +260,15 @@ class TestChartCompression:
     """Tests for conic chart compression: single determinant vs 3 minors."""
 
     def test_chart_determinant_zero_when_minors_zero(self):
-        """If all 3 minors are 0 mod p, chart determinant is also 0 mod p."""
-        from insideout.projective_collision import (
-            chart_determinant, apply_U, Triple
-        )
-        # Two triples known to be projectively equal mod 97
-        t1 = Triple(3 % 97, 4 % 97, 5 % 97)
-        # Apply same branch to both — they stay equal
-        t2 = apply_U(t1, 97)
+        """If two triples are projectively equal mod p, chart determinant is 0 mod p.
+
+        Proportional triples (3,4,5) and (6,8,10) represent the same projective
+        point, so their chart determinant should vanish mod p.
+        """
+        from insideout.projective_collision import chart_determinant, Triple
+        # (3,4,5) and (6,8,10) are proportional → same projective point
+        t1 = Triple(3, 4, 5)
+        t2 = Triple(6, 8, 10)  # 2*(3,4,5)
         det = chart_determinant(t1, t2, 97)
         assert det % 97 == 0, f"chart det {det} should be 0 mod 97"
 
@@ -310,3 +311,48 @@ class TestChartCompression:
                 count += 1
         # Expected: 10000 / 2^24 ≈ 0.0006; allow broad range
         assert 0 <= count <= 10, f"distinguished count {count} out of expected range"
+
+
+SEMIPRIMES = [
+    (35, 5, 7),
+    (77, 7, 11),
+    (221, 13, 17),
+    (437, 19, 23),
+    (667, 23, 29),
+    (1147, 31, 37),
+    (1927, 41, 47),
+    (8051, 83, 97),
+    (15571, 113, 137),
+    # Balanced semiprimes (harder for rho-like methods)
+    (3127,  53,  59),   # 53×59=3127
+    (3599,  59,  61),   # 59×61=3599
+    (4757,  67,  71),   # 67×71=4757
+    (4891,  67,  73),   # 67×73=4891
+    (5183,  71,  73),   # 71×73=5183
+    (6557,  79,  83),   # 79×83=6557
+    # Larger semiprimes
+    (1022117, 1009, 1013),
+    (1032247, 1013, 1019),
+    (1040399, 1019, 1021),
+    (1052651, 1021, 1031),
+    (1065023, 1031, 1033),
+    (1073287, 1033, 1039),
+    (1089911, 1039, 1049),
+    (1102499, 1049, 1051),
+]
+
+
+class TestProjectiveChartIntegration:
+    """Integration tests: chart collision factoring on known semiprimes."""
+
+    @pytest.mark.parametrize("expected, p, q", SEMIPRIMES)
+    def test_chart_factors_known_semiprime(self, expected, p, q):
+        from insideout.projective_collision import chart_collision_factor
+        N = p * q
+        result = chart_collision_factor(N, max_steps=50000, num_walks=16)
+        if result is None:
+            result = chart_collision_factor(N, max_steps=200000, num_walks=32)
+        assert result is not None, f"chart_collision failed on N={N}"
+        factors = sorted(result)
+        assert factors[0] == min(p, q) and factors[1] == max(p, q), \
+            f"got {factors}, expected ({min(p,q)}, {max(p,q)})"
