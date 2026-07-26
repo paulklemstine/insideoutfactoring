@@ -356,3 +356,70 @@ class TestProjectiveChartIntegration:
         factors = sorted(result)
         assert factors[0] == min(p, q) and factors[1] == max(p, q), \
             f"got {factors}, expected ({min(p,q)}, {max(p,q)})"
+
+
+class TestOrbitSmoothRelation:
+    """Tests for orbit-to-smooth-relation NFS lane."""
+
+    def test_norm_of_branch_word_is_integer(self):
+        """norm_of_branch_word returns a positive integer."""
+        from insideout.orbit_smooth_relation import norm_of_branch_word, Triple
+        N = 97 * 101
+        seed = Triple(3 % N, 4 % N, 5 % N)
+        n = norm_of_branch_word('U', seed, N)
+        assert isinstance(n, int), f"norm should be int, got {type(n)}"
+        assert n > 0, f"norm should be positive, got {n}"
+
+    def test_norm_same_for_equivalent_words(self):
+        """norm is deterministic: same word gives same norm."""
+        from insideout.orbit_smooth_relation import norm_of_branch_word, Triple
+        N = 97 * 101
+        seed = Triple(3 % N, 4 % N, 5 % N)
+        n1 = norm_of_branch_word('UUU', seed, N)
+        n2 = norm_of_branch_word('UUU', seed, N)
+        assert n1 == n2
+
+    def test_smooth_detection_known_smooth(self):
+        """Known smooth numbers are detected correctly."""
+        from insideout.orbit_smooth_relation import is_smooth
+        # 2^10 = 1024 = only prime {2}
+        assert is_smooth(1024, bound=1024) is True
+        assert is_smooth(1024, bound=100) is False
+        # 2*3*5 = 30
+        assert is_smooth(30, bound=30) is True
+        assert is_smooth(30, bound=5) is False
+
+    def test_smooth_detection_not_smooth(self):
+        """Numbers with large prime factors are not smooth."""
+        from insideout.orbit_smooth_relation import is_smooth
+        assert is_smooth(101, bound=100) is False
+        assert is_smooth(103424, bound=1000) is False
+
+    def test_build_relation_matrix_dimensions(self):
+        """Relation matrix has correct row/col dimensions."""
+        from insideout.orbit_smooth_relation import build_relation_matrix
+        relations = [
+            {2: 2, 3: 1},   # 12 = 2^2 * 3^1
+            {2: 1, 3: 2},   # 18 = 2^1 * 3^2
+        ]
+        FB = [2, 3, 5, 7]
+        M = build_relation_matrix(relations, FB)
+        assert M.rows == 2, f"expected 2 rows, got {M.rows}"
+        assert M.cols == 4, f"expected 4 cols, got {M.cols}"
+
+    def test_gaussian_elimination_finds_nullvector(self):
+        """Gaussian elimination over GF(2) finds a nullspace vector.
+
+        Matrix:
+            [1 1 0]
+            [0 1 1]
+        Row1 + Row2 = [1 0 1] → nullspace vector = {0, 2}
+        """
+        from insideout.orbit_smooth_relation import GF2SparseMatrix
+        M = GF2SparseMatrix(2, 3)
+        M.set(0, 0); M.set(0, 1)  # row 0: [1,1,0]
+        M.set(1, 1); M.set(1, 2)  # row 1: [0,1,1]
+        null = M.gaussian_elimination()
+        # Row0 xor Row1 = [1,0,1] which has no pivot in col 0 or 2
+        assert null is not None
+        assert len(null) > 0
