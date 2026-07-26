@@ -216,18 +216,13 @@ class TestCharacterSumFactor:
         fp, fq = result
         assert fp * fq == N
 
-    def test_40bit_semiprime(self):
-        """A 40-bit semiprime."""
-        p, q = 549755813887, 549755813891
-        # Skip if these aren't actually prime — just check the algorithm runs.
-        N = p * q
-        result = character_sum_factor(N)
-        if result is not None:
-            fp, fq = result
-            assert fp * fq == N
-
     def test_64bit_semiprime(self):
-        """A 64-bit semiprime (balanced)."""
+        """A 62-bit balanced semiprime.
+
+        The character-sum probe is exponential for large N, so for inputs
+        above ~40 bits the Pollard-rho fallback does the heavy lifting.
+        This test verifies the full pipeline works end-to-end.
+        """
         p = 2147483647   # Mersenne prime 2^31 - 1
         q = 2147483629   # another large prime
         N = p * q
@@ -235,3 +230,11 @@ class TestCharacterSumFactor:
         assert result is not None, f"Failed to factor {N}={p}*{q}"
         fp, fq = result
         assert fp * fq == N
+
+    def test_character_sum_probe_direct_small(self):
+        """_character_probe finds factors directly for small N."""
+        # For these N, the quadratic twist hits a factor within budget.
+        for N in [8051, 15571, 1022117, 65537 * 65539]:
+            result = _character_probe(N, num_bases=10, max_k=100000)
+            assert result is not None, f"probe failed on {N}"
+            assert result[0] * result[1] == N

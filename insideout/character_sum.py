@@ -218,7 +218,7 @@ def _character_probe(
 
     # Build the list of bases: small primes first (deterministic), then random.
     bases: list[int] = [p for p in _SMALL_PRIMES if 2 < p < N]
-    while len(bases) < num_bases:
+    while len(bases) < num_bases and N > 3:
         a = random.randrange(2, N - 1)
         if a not in bases:
             bases.append(a)
@@ -271,6 +271,8 @@ def _pollard_rho(N: int, max_steps: int = 200000) -> tuple[int, int] | None:
     """Pollard's rho with Brent's cycle detection (fallback)."""
     if N % 2 == 0:
         return (2, N // 2)
+    if N < 4:
+        return None
     for _ in range(10):
         x = random.randrange(2, N - 1)
         y = x
@@ -337,15 +339,16 @@ def character_sum_factor(N: int, max_trials: int = 100000) -> tuple[int, int] | 
 
     # Layer 2: character-sum probe.
     # Budget across bases and twists.  The quadratic twist converges in
-    # ~N^{1/5} steps for balanced semiprimes, so max_k need not be huge.
-    num_bases = min(60, max(5, max_trials // 2000))
-    max_k = min(max(1000, max_trials // max(num_bases, 1)), 500000)
+    # ~N^{1/5} steps for balanced semiprimes up to ~40 bits; for larger N
+    # the probe is a fast pre-check before falling back to Pollard rho.
+    num_bases = min(30, max(3, max_trials // 5000))
+    max_k = min(max(500, max_trials // max(num_bases * 4, 1)), 200000)
     result = _character_probe(N, num_bases=num_bases, max_k=max_k)
     if result is not None:
         return _order(result)
 
     # Layer 3: Pollard rho fallback.
-    result = _pollard_rho(N, max_steps=max_trials)
+    result = _pollard_rho(N, max_steps=max(200000, max_trials))
     if result is not None:
         return _order(result)
 
