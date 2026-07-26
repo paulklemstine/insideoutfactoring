@@ -78,13 +78,28 @@ def _trial_division(n: int, bound: int = 1000) -> tuple[int, int] | None:
     return None
 
 
+def _integer_nth_root(n: int, k: int) -> int:
+    """Compute floor(n^(1/k)) using integer arithmetic (Newton's method)."""
+    if k == 1:
+        return n
+    if k == 2:
+        return isqrt(n)
+    # Initial guess from bit length
+    guess = 1 << ((n.bit_length() + k - 1) // k)
+    while True:
+        new_guess = ((k - 1) * guess + n // pow(guess, k - 1)) // k
+        if new_guess >= guess:
+            return guess
+        guess = new_guess
+
+
 def _is_perfect_power(n: int) -> tuple[int, int] | None:
     """Detect n = a**b for b >= 2.  Returns (a, b) or None."""
     for b in range(2, n.bit_length() + 1):
         if b == 2:
             a = isqrt(n)
         else:
-            a = int(round(n ** (1.0 / b)))
+            a = _integer_nth_root(n, b) if n.bit_length() > 512 else int(round(n ** (1.0 / b)))
         for cand in (a - 1, a, a + 1):
             if cand > 1 and cand ** b == n:
                 return (cand, b)
@@ -330,7 +345,7 @@ def character_sum_factor(N: int, max_trials: int = 100000) -> tuple[int, int] | 
         return (min(a, other), max(a, other))
 
     # Small trial division
-    td = _trial_division(N, bound=min(1000, int(N ** (1 / 3)) + 1))
+    td = _trial_division(N, bound=min(1000, _integer_nth_root(N, 3) + 1))
     if td is not None:
         return (min(td[0], td[1]), max(td[0], td[1]))
 
