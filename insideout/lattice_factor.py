@@ -471,10 +471,6 @@ def lattice_factor(N: int, bound: int = 100000,
     if s * s == N and s > 1:
         return (s, s)
 
-    # Skip for large N — method too slow
-    if N.bit_length() > 256:
-        return None
-
     for p in range(3, min(s + 1, 1000), 2):
         if N % p == 0:
             return (p, N // p)

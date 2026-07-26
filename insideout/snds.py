@@ -637,10 +637,6 @@ def snds_factor(N: int, bound: int = 50000) -> Optional[tuple[int, int]]:
     if s * s == N and s > 1:
         return (s, s)
 
-    # Skip for large N — method too slow
-    if N.bit_length() > 256:
-        return None
-
     # Get candidate matrices (CF-guided + random)
     candidate_matrices = _cf_guidance_matrices(N)
 
