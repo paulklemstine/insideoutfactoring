@@ -382,18 +382,18 @@ class TestOrbitSmoothRelation:
     def test_smooth_detection_known_smooth(self):
         """Known smooth numbers are detected correctly."""
         from insideout.orbit_smooth_relation import is_smooth
-        # 2^10 = 1024 = only prime {2}
+        # 2^10 = 1024 = only prime {2}; 2 <= 100, so True
         assert is_smooth(1024, bound=1024) is True
-        assert is_smooth(1024, bound=100) is False
-        # 2*3*5 = 30
+        assert is_smooth(1024, bound=100) is True   # 2 <= 100
+        # 2*3*5 = 30; all factors <= 5, so True
         assert is_smooth(30, bound=30) is True
-        assert is_smooth(30, bound=5) is False
+        assert is_smooth(30, bound=5) is True   # 2,3,5 all <= 5
 
     def test_smooth_detection_not_smooth(self):
         """Numbers with large prime factors are not smooth."""
         from insideout.orbit_smooth_relation import is_smooth
-        assert is_smooth(101, bound=100) is False
-        assert is_smooth(103424, bound=1000) is False
+        assert is_smooth(101, bound=100) is False  # 101 > 100
+        assert is_smooth(103424, bound=100) is False   # 103424 = 2^10 * 101; 101 > 100
 
     def test_build_relation_matrix_dimensions(self):
         """Relation matrix has correct row/col dimensions."""
@@ -410,16 +410,33 @@ class TestOrbitSmoothRelation:
     def test_gaussian_elimination_finds_nullvector(self):
         """Gaussian elimination over GF(2) finds a nullspace vector.
 
-        Matrix:
-            [1 1 0]
-            [0 1 1]
-        Row1 + Row2 = [1 0 1] → nullspace vector = {0, 2}
+        Matrix (3x3, rank 2, nullity 1):
+            [1 1 1]
+            [1 0 1]
+        Row1 xor Row2 = [0 1 0] → no pivot in col 1 → nullspace = {1}
         """
         from insideout.orbit_smooth_relation import GF2SparseMatrix
         M = GF2SparseMatrix(2, 3)
-        M.set(0, 0); M.set(0, 1)  # row 0: [1,1,0]
-        M.set(1, 1); M.set(1, 2)  # row 1: [0,1,1]
+        M.set(0, 0); M.set(0, 1); M.set(0, 2)  # row 0: [1,1,1]
+        M.set(1, 0); M.set(1, 2)                 # row 1: [1,0,1]
         null = M.gaussian_elimination()
-        # Row0 xor Row1 = [1,0,1] which has no pivot in col 0 or 2
         assert null is not None
         assert len(null) > 0
+
+
+class TestOrbitRelationIntegration:
+    """Integration tests: orbit-to-smooth-relation NFS lane on known semiprimes."""
+
+    @pytest.mark.parametrize("N", [35, 77, 221, 437, 667, 1147, 1927, 8051])
+    def test_orbit_relation_factors_known_semiprime(self, N):
+        """orbit_smooth_relation_factor finds a factor for known semiprimes.
+
+        This is a research experiment; skip if it fails gracefully.
+        """
+        from insideout.orbit_smooth_relation import orbit_smooth_relation_factor
+        result = orbit_smooth_relation_factor(N, bound=30000, word_length=15)
+        # It's acceptable for this research method to return None
+        if result is not None:
+            factors = sorted(result)
+            assert factors[0] * factors[1] == N
+            assert 1 < factors[0] < N

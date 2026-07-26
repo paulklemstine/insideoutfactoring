@@ -54,6 +54,7 @@ from .fibonacci_factor import fibonacci_gcd_factor, pisano_factor
 from .resonance_cascade import resonance_cascade_factor
 from .lucas_ppt import lucas_ppt_factor
 from .projective_collision import chart_collision_factor as projective_chart_factor
+from .orbit_smooth_relation import orbit_smooth_relation_factor
 from .spectral_factor import spectral_cascade_factor
 from .relation_generator import relation_factor
 from .fibonacci_pythagorean import fibonacci_pythagorean_factor
@@ -180,6 +181,14 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         p, q = rc_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "resonance_cascade")
+
+    # Strategy: Orbit Smooth Relation (NFS-style: orbit norms → smooth relations → linear algebra)
+    # Research experiment — placed after established methods; slow, success not guaranteed
+    or_result = orbit_smooth_relation_factor(N, bound=30000, word_length=15)
+    if or_result is not None:
+        p, q = or_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "orbit_relation")
 
     # Strategy: Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
     # Combines CF-convergent squaring orbits, SL₂(Z/NZ) matrix powers,
