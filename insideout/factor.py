@@ -186,38 +186,37 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "resonance_cascade")
 
-    # Strategy: Orbit Smooth Relation (NFS-style: orbit norms → smooth relations → linear algebra)
-    # Research experiment — placed after established methods; slow, success not guaranteed
-    or_result = orbit_smooth_relation_factor(N, bound=30000, word_length=15)
+
+    # Strategy: Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
+    # === Research Experiments (run after established methods) ===
+    # Orbit Smooth Relation -- NFS-style smooth relation collection
+    or_result = orbit_smooth_relation_factor(N, bound=10000, word_length=10)
     if or_result is not None:
         p, q = or_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "orbit_relation")
-
-    # Strategy: SNDS — Spectral Nilpotent Dynamical System (trace sequence BM over SL2)
-    snds_result = snds_factor(N, bound=50000)
+    
+    # SNDS -- trace sequence Berlekamp-Massey
+    snds_result = snds_factor(N, bound=30000)
     if snds_result is not None:
         p, q = snds_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "snds")
-
-    # Strategy: Hashimoto Operator — non-backtracking walk on SL2 Cayley graph
-    hm_result = hashimoto_factor(N, walks=5000, walk_length=30)
+    
+    # Hashimoto -- non-backtracking walk on SL2
+    hm_result = hashimoto_factor(N, walks=3000, walk_length=20)
     if hm_result is not None:
         p, q = hm_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "hashimoto")
-
-    # Strategy: Adaptive Portfolio — Thompson-sampled multi-method orchestration
-    ap_result = adaptive_portfolio_factor(N, time_budget_ms=5000)
+    
+    # Adaptive Portfolio -- Thompson-sampled orchestration
+    ap_result = adaptive_portfolio_factor(N, time_budget_ms=3000)
     if ap_result is not None and ap_result[0] is not None:
         p, q = ap_result[0]
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "adaptive_portfolio")
 
-    # Strategy: Spectral Cascade (CF squaring + SL₂ matrix order + QR discriminator + idempotent + near-square + walk)
-    # Combines CF-convergent squaring orbits, SL₂(Z/NZ) matrix powers,
-    # QR discriminator, idempotent detection, near-square search, and CF-guided walk
     sc_result = spectral_cascade_factor(N)
     if sc_result is not None:
         p, q = sc_result
@@ -426,23 +425,3 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
             return ((min(p, q), max(p, q)), "hybrid_cyclo_sl2")
 
     # Strategy: Inside-Out (CF-steered best-first search + BFS)
-    result = inside_out_factor(N, max_iterations=50000)
-    if result is not None:
-        p, q = result
-        if p * q == N and p > 1 and q > 1:
-            return ((min(p, q), max(p, q)), "inside_out")
-
-    # Strategy: Wavefront search
-    result = search_wavefront(N, max_radius=500)
-    if result is not None:
-        p, q = result
-        if p * q == N and p > 1 and q > 1:
-            return ((min(p, q), max(p, q)), "wavefront")
-
-    # Fallback: Full trial division
-    limit = isqrt(N) + 1
-    for p in range(3, limit, 2):
-        if N % p == 0:
-            return ((p, N // p), "trial_division")
-
-    return None

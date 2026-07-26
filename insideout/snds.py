@@ -657,7 +657,8 @@ def snds_factor(N: int, bound: int = 50000) -> Optional[tuple[int, int]]:
                     return (min(g, other), max(g, other))
 
         # Try different trace sequence lengths
-        for seq_len in [100, 200, 500, 1000, 2000, 5000, 10000]:
+        max_seq = max(50, min(200, N.bit_length() * 2))
+        for seq_len in [50, 100, 200, 500, 1000]:
             if seq_len > bound:
                 break
 

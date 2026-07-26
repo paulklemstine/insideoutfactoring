@@ -88,7 +88,8 @@ def norm_of_branch_word(word: str, seed: Triple, N: int) -> int:
 # --------------------------------------------------------------------
 
 def _primes_upto(n: int) -> list[int]:
-    """Simple sieve for primes up to n."""
+    """Simple sieve for primes up to n.  Hard cap at 5 million."""
+    n = min(n, 5_000_000)
     if n < 2:
         return []
     sieve = bytearray(b'\x01') * (n + 1)
@@ -120,10 +121,11 @@ def is_smooth(n: int, bound: int) -> bool:
 def smoothness_bound_for_N(N: int) -> int:
     """Suggest a smoothness bound based on N size.
 
-    Heuristic: max(2^18, N^0.25).  Scales with N while keeping
-    the factor base manageable.
+    Capped at 2^22 (~4 million) to keep factor base manageable.
+    For large N, the orbit norms are also bounded, so a moderate
+    smoothness bound still captures smooth relations if they exist.
     """
-    return max(2**18, int(N ** 0.25))
+    return min(max(2**18, int(N ** 0.25)), 2**22)
 
 
 def factorize_small(n: int, bound: int) -> dict[int, int] | None:
