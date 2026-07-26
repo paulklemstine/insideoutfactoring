@@ -1,0 +1,161 @@
+[
+  {
+    "id": "PC-001",
+    "status": "pilot_complete",
+    "hypothesis": "Berggren projective collisions can expose factors, but do not beat equal-cost rho on random balanced semiprimes absent measurable orbit bias.",
+    "treatment": "thin-seed Berggren BFS, minor GCD probes, windows 8/32/128",
+    "baselines": [
+      "Brent rho",
+      "random-triple projective collisions"
+    ],
+    "primary_metric": "success probability at fixed normalized modular work, GCD count, and memory",
+    "next_action": "retain only as bounded deterministic replay; randomized successor ML-008 rejected on corrected corpus"
+  },
+  {
+    "id": "PW-002",
+    "status": "proposed",
+    "hypothesis": "Short periodic branch matrices expose a favorable smooth-order family not explained by p-1 or p+1.",
+    "baselines": [
+      "Pollard p-1",
+      "Williams p+1",
+      "ECM"
+    ],
+    "primary_metric": "certified splits per modular multiplication"
+  },
+  {
+    "id": "IO-003",
+    "status": "proposed",
+    "hypothesis": "Distinguished backward forms improve the inside-out time-memory product.",
+    "baselines": [
+      "full MITM frontier",
+      "bounded beam",
+      "random forms"
+    ],
+    "primary_metric": "replayable incidences per CPU-second times peak bytes"
+  },
+  {
+    "id": "RB-004",
+    "status": "proposed",
+    "hypothesis": "Shared product-tree batching lowers GCD cost after isolation and memory overhead.",
+    "baselines": [
+      "one GCD per residue"
+    ],
+    "primary_metric": "residues processed per CPU-second"
+  },
+  {
+    "id": "SP-005",
+    "status": "proposed",
+    "hypothesis": "Cheap spectral sketches add held-out predictive value after arithmetic features and feature cost.",
+    "baselines": [
+      "fixed arithmetic feature model"
+    ],
+    "primary_metric": "held-out end-to-end yield per CPU-second"
+  },
+  {
+    "id": "GS-006",
+    "status": "proposed",
+    "hypothesis": "Discounted cost-aware scheduling reduces tail time under nonstationary worker yield.",
+    "baselines": [
+      "round robin",
+      "static proportional allocation"
+    ],
+    "primary_metric": "time to fixed certified-output target, including 90th percentile"
+  },
+  {
+    "id": "NF-007",
+    "status": "proposed",
+    "hypothesis": "Size/root-score-matched geometric NFS proposals improve unique usable relation yield.",
+    "baselines": [
+      "conventional matched sieve regions"
+    ],
+    "primary_metric": "unique usable relations per total CPU-second"
+  },
+  {
+    "id": "ML-008",
+    "status": "pilot_rejected",
+    "hypothesis": "Salted random Berggren walks produce more factor-revealing projective collisions than iid points on the same conic at equal instrumentation.",
+    "treatment": "64-step random Berggren walks with reproducible restarts",
+    "baselines": [
+      "iid rational-conic samples",
+      "seeded Brent rho"
+    ],
+    "primary_metric": "certified splits at fixed pair budget with modular-operation and GCD accounting",
+    "result": "44/180 walk, 50/180 iid conic, 147/180 rho; do not promote"
+  },
+  {
+    "id": "PT-009",
+    "status": "pilot_rejected",
+    "hypothesis": "Product-tree residue epochs improve projective-probe throughput by at least 2x including isolation and memory cost.",
+    "baselines": [
+      "one batched GCD per projective comparison"
+    ],
+    "primary_metric": "frozen residues processed per CPU-second under peak-memory cap",
+    "result": "Median paired throughput 1.409x (epoch 256), 1.409x (1024), 1.401x (4096), below the preregistered 2x gate; exact factor yield preserved and masking isolation passed.",
+    "next_action": "retain moderate epochs only as a profiled constant-factor option; proceed to held-out AQ-010 predictor study"
+  },
+  {
+    "id": "AQ-010",
+    "status": "pilot_rejected",
+    "hypothesis": "Public auxiliary-prime orbit features predict held-out factor yield beyond size, seed count, and feature cost.",
+    "baselines": [
+      "size-and-cost feature model",
+      "random scheduling"
+    ],
+    "primary_metric": "held-out paired end-to-end yield per CPU-second",
+    "result": "Held-out auxiliary model worsened log loss (0.1696 vs 0.1569) and AUC (0.9677 vs 0.9734); top-3 scheduling split 4/20 integers versus 6/20 random, with paired bootstrap interval [-0.25, 0.00] and lower end-to-end yield.",
+    "next_action": "do not promote this feature family; proceed to size/root-score-matched SR-011 smooth-relation study"
+  },
+  {
+    "id": "SR-011",
+    "status": "pilot_rejected",
+    "hypothesis": "Short-word orbit norms improve unique usable smooth-relation yield after matching norm size and root score.",
+    "baselines": [
+      "matched random NFS sieve locations"
+    ],
+    "primary_metric": "unique usable relations per total CPU-second",
+    "result": "At B=1000 over 60 balanced semiprimes and 30,720 observations per arm, Berggren proposals yielded 852 smooth relations versus 856 matched controls; Fibonacci/Lucas proposals yielded 1,230 versus 1,219. Paired 95% bootstrap intervals for rate differences both crossed zero.",
+    "next_action": "do not promote scalar structured offsets; test periodic-word order families and one/two-large-prime relation completion"
+  },
+  {
+    "id": "HB-012",
+    "status": "proposed",
+    "hypothesis": "Cheap structural fingerprints improve rho/ECM allocation tail latency on a frozen mixed corpus.",
+    "baselines": [
+      "static allocation",
+      "round robin"
+    ],
+    "primary_metric": "median and 90th-percentile time to certified split"
+  },
+  {
+    "id": "PW-012",
+    "status": "pilot_promising_not_promoted",
+    "hypothesis": "A frozen algebraically diverse panel of periodic Berggren words exposes smooth projective orders not explained by p-1 or p+1.",
+    "baselines": [
+      "multiplicative p-1-style ladder",
+      "Lucas-torus p+1-style ladder"
+    ],
+    "primary_metric": "held-out certified splits per counted scalar modular multiplication",
+    "result": "At B=1000 on 60 balanced semiprimes, Berggren words split 41 cases versus 17 multiplicative and 29 Lucas-torus; 12 splits were outside the union of both controls. But yield was only 1.31 splits per million counted modular multiplications versus 10.31 and 2.63, respectively.",
+    "next_action": "do not promote the 3x3 implementation; reduce words to deduplicated second-order Lucas/Chebyshev recurrences and retest against production p-1, Williams p+1, and ECM on held-out larger inputs"
+  },
+  {
+    "id": "LP-013",
+    "status": "pilot_rejected",
+    "hypothesis": "Structured offsets improve completed one/two-large-prime relation cycles despite no full-smoothness advantage.",
+    "baselines": [
+      "SR-011 matched ordinary offsets"
+    ],
+    "primary_metric": "independent completed relations per frozen relation pool; end-to-end timing deferred unless pool-quality gate passes",
+    "result": "At large-prime bound 1000000, Berggren produced 972 completed relations versus 993 control and Fibonacci/Lucas 1462 versus 1450 control. Paired 95% bootstrap intervals [-1.467, 0.817] and [-1.217, 1.667] both crossed zero; partial-cycle counts were 120/137 and 232/231.",
+    "next_action": "do not promote scalar structured offsets; proceed to periodic-word orders or jointly matched Gaussian two-norm relations"
+  },
+  {
+    "id": "GN-014",
+    "status": "proposed",
+    "hypothesis": "Pythagorean/Gaussian parameter proposals improve jointly matched two-norm relation yield.",
+    "baselines": [
+      "joint norm-size/root-score matched proposals"
+    ],
+    "primary_metric": "unique usable two-sided relations per total CPU-second"
+  }
+]
