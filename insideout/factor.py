@@ -58,6 +58,10 @@ from .orbit_smooth_relation import orbit_smooth_relation_factor
 from .snds import snds_factor
 from .hashimoto_factor import hashimoto_factor
 from .adaptive_portfolio import adaptive_factor as adaptive_portfolio_factor
+from .cayley_spectral import cayley_spectral_factor
+from .padic_factor import padic_factor
+from .mobius_resonance import mobius_resonance_factor
+from .quadratic_character import quadratic_character_factor
 from .spectral_factor import spectral_cascade_factor
 from .relation_generator import relation_factor
 from .fibonacci_pythagorean import fibonacci_pythagorean_factor
@@ -216,6 +220,29 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         p, q = ap_result[0]
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "adaptive_portfolio")
+
+    # Novel methods (guarded by bit size — these are O(sqrt(p)) and only viable for smaller N)
+    if N.bit_length() <= 128:
+        # P-adic slope: smooth ladder + collision GCD
+        pad_result = padic_factor(N, smooth_bound=10000)
+        if pad_result is not None:
+            p, q = pad_result
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "padic")
+
+        # Möbius resonance: Möbius transform collisions on unit circle
+        mr_result = mobius_resonance_factor(N, max_steps=3000)
+        if mr_result is not None:
+            p, q = mr_result
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "mobius_resonance")
+
+        # Quadratic character: QR ladder + Jacobi mismatch
+        qc_result = quadratic_character_factor(N, max_iter=10000)
+        if qc_result is not None:
+            p, q = qc_result
+            if p * q == N and 1 < p < N and 1 < q < N:
+                return ((min(p, q), max(p, q)), "quadratic_char")
 
     sc_result = spectral_cascade_factor(N)
     if sc_result is not None:
