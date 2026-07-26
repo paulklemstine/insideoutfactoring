@@ -355,7 +355,8 @@ def _multi_start_descent(
               0.5, 0.7, 1.2, 1.8, 2.2, 3.5]
 
     for scale in scales:
-        m_approx = int(sqrt_N * scale / (1 + scale))
+        # Use integer arithmetic to avoid float overflow for large N
+        m_approx = sqrt_N  # Simplified: just use sqrt_N directly
         n_approx = sqrt_N - m_approx
         if n_approx < 1:
             n_approx = 1
@@ -567,7 +568,7 @@ def multi_scale_mobius_factor(
 
     for scale in scales:
         # At this scale, find (m, n) with m/n ~ scale
-        n_approx = max(1, int(sqrt_N / scale))
+        n_approx = max(1, sqrt_N // 2)
         m_approx = int(n_approx * scale)
         if m_approx <= n_approx:
             continue

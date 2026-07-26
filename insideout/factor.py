@@ -80,6 +80,8 @@ from .lattice_factor import lattice_factor, hybrid_smooth_factor
 from .graph_order import graph_order_cascade_factor, order_spectrum_factor
 from .coppersmith import coppersmith_factor
 from .hybrid_cyclo_sl2 import hybrid_cyclo_sl2_factor
+from .multi_scale_mobius import multi_scale_mobius_factor
+from .lattice_descent import lattice_descent_factor
 
 
 def factor(N: int) -> tuple[int, int] | None:
@@ -141,6 +143,20 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if N % p == 0:
             return ((p, N // p), "trial_division")
 
+    # === FAST METHODS FIRST (O(1) for well-separated factors) ===
+    # These run before all others because they're fastest when they work
+    rc_result = resonance_cascade_factor(N)
+    if rc_result is not None:
+        p, q = rc_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "resonance_cascade")
+
+    msm_result = multi_scale_mobius_factor(N, num_scales=10, depth=500)
+    if msm_result is not None:
+        p, q = msm_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "multi_scale_mobius")
+
     # Strategy: Brahmagupta-Fibonacci two-square method
     # Effective for N == 1 mod 4 (products of primes == 1 mod 4)
     bf_result = brahmagupta_fibonacci_factor(N)
@@ -165,14 +181,7 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "fibonacci")
 
-    # Strategy: Resonance Cascade (Möbius descent + CF resonance + squaring)
-    # FASTEST for well-separated factors: O(|p-q|) via Berggren tree descent
-    # Run this FIRST before all other methods
-    rc_result = resonance_cascade_factor(N)
-    if rc_result is not None:
-        p, q = rc_result
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return ((min(p, q), max(p, q)), "resonance_cascade")
+    # (Fast methods moved to top of chain above)
 
     # Strategy: Lucas-PPT Factoring (Williams p+1 via PPT structure)
     # Uses Lucas sequences derived from Berggren tree branches

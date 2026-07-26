@@ -175,6 +175,10 @@ def _eigenvalue_gcd(M: Matrix3x3, N: int, max_steps: int = 1000) -> Optional[tup
     explore the Pythagorean triple lattice efficiently.
 
     Uses O(1) per step (constant-size matrix-vector multiply).
+
+    Also uses a "batch GCD" approach: accumulate the product of coordinates
+    over a batch of steps, then take a single gcd. This catches factors
+    that appear in any coordinate across the batch.
     """
     # Root PPT
     v = (3, 4, 5)
@@ -185,12 +189,36 @@ def _eigenvalue_gcd(M: Matrix3x3, N: int, max_steps: int = 1000) -> Optional[tup
         if 1 < g < N:
             return _sorted_pair(g, N // g)
 
-    for _ in range(max_steps):
+    # Batch GCD parameters
+    batch_size = min(100, max_steps)
+    product_a = 1
+    product_b = 1
+    product_c = 1
+
+    for step in range(1, max_steps + 1):
         v = _mat_vec_mul_mod(M, v, N)
-        for coord in v:
+        a, b, c = v
+
+        # Individual gcd check
+        for coord in (a, b, c):
             g = gcd(coord, N)
             if 1 < g < N:
                 return _sorted_pair(g, N // g)
+
+        # Accumulate for batch GCD
+        product_a = (product_a * a) % N
+        product_b = (product_b * b) % N
+        product_c = (product_c * c) % N
+
+        # Periodic batch GCD check
+        if step % batch_size == 0:
+            for prod in (product_a, product_b, product_c):
+                g = gcd(prod, N)
+                if 1 < g < N:
+                    return _sorted_pair(g, N // g)
+            product_a = 1
+            product_b = 1
+            product_c = 1
 
     return None
 
