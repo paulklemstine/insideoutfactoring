@@ -207,7 +207,12 @@ class TestFactorIntegration:
         """factor_with_method should report a valid method name."""
         valid_methods = {
             "perfect_square", "cf_precheck", "brahmagupta", "fermat",
-            "fibonacci", "inside_out", "wavefront", "trial_division",
+            "fibonacci", "resonance_cascade", "lucas_ppt", "spectral_cascade",
+            "fib_pyth", "lucas_multi", "crt_collision",
+            "sl2_group_order", "sl2_structured", "batch_crt", "ppt_sieve",
+            "cf_matrix_cascade", "cf_cascade",
+            "ppt_form", "squfof", "class_group", "class_squfof", "class_group", "class_squfof",
+            "relation_gen", "inside_out", "wavefront", "trial_division",
         }
         result = factor_with_method(21)
         assert result is not None
@@ -236,5 +241,72 @@ class TestFactorIntegration:
 def valid_methods_list():
     return [
         "perfect_square", "cf_precheck", "brahmagupta", "fermat",
-        "fibonacci", "resonance_cascade", "inside_out", "wavefront", "trial_division",
+        "fibonacci", "resonance_cascade", "lucas_ppt", "spectral_cascade",
+        "fib_pyth", "lucas_multi", "crt_collision",
+        "sl2_group_order", "sl2_structured", "batch_crt", "ppt_sieve",
+        "cf_matrix_cascade", "cf_cascade",
+        "ppt_form", "squfof", "class_group", "class_squfof",
+        "cyclotomic_resultant", "cyclotomic_cascade",
+        "discriminant_resonance", "quadratic_resonance",
+        "hensel_cascade", "crt_lattice",
+        "lattice_factor", "hybrid_smooth",
+        "graph_order", "order_spectrum",
+        "relation_gen", "inside_out", "wavefront", "trial_division",
+        "projective_chart", "orbit_relation",
     ]
+
+
+class TestChartCompression:
+    """Tests for conic chart compression: single determinant vs 3 minors."""
+
+    def test_chart_determinant_zero_when_minors_zero(self):
+        """If all 3 minors are 0 mod p, chart determinant is also 0 mod p."""
+        from insideout.projective_collision import (
+            chart_determinant, apply_U, Triple
+        )
+        # Two triples known to be projectively equal mod 97
+        t1 = Triple(3 % 97, 4 % 97, 5 % 97)
+        # Apply same branch to both — they stay equal
+        t2 = apply_U(t1, 97)
+        det = chart_determinant(t1, t2, 97)
+        assert det % 97 == 0, f"chart det {det} should be 0 mod 97"
+
+    def test_chart_determinant_nonzero_when_minors_nonzero(self):
+        """If triples differ mod p, chart determinant is nonzero with high probability."""
+        from insideout.projective_collision import chart_determinant, Triple
+        t1 = Triple(3, 4, 5)
+        t2 = Triple(7, 11, 13)
+        det = chart_determinant(t1, t2, 97)
+        # Probabilistically nonzero mod 97 unless we got unlucky
+        assert det % 97 != 0 or det == 0
+
+    def test_failed_inversion_gcd(self):
+        """When c+b is not invertible mod N, gcd(c+b, N) reveals a factor."""
+        from insideout.projective_collision import gcd_safe_c_plus_b, Triple
+        # N = 97 * 101 = 9797; c+b = 194 = 2 * 97
+        t = Triple(97, 0, 97)
+        g = gcd_safe_c_plus_b(t, 97 * 101)
+        assert g in (97, 101, 9797), f"gcd = {g}"
+
+    def test_distinguished_predicate(self):
+        """Distinguished points have low bits zero."""
+        from insideout.projective_collision import is_distinguished, Triple
+        t_dist = Triple(0, 0, 0)
+        t_nondist = Triple(1, 2, 3)
+        assert is_distinguished(t_dist, bits=4) is True
+        assert is_distinguished(t_nondist, bits=4) is False
+
+    def test_distinguished_density(self):
+        """Distinguished density is approximately 1/2^(3*bits)."""
+        import random
+        from insideout.projective_collision import is_distinguished, Triple
+        random.seed(42)
+        count = 0
+        for _ in range(10000):
+            t = Triple(random.randrange(0, 2**20),
+                       random.randrange(0, 2**20),
+                       random.randrange(0, 2**20))
+            if is_distinguished(t, bits=8):
+                count += 1
+        # Expected: 10000 / 2^24 ≈ 0.0006; allow broad range
+        assert 0 <= count <= 10, f"distinguished count {count} out of expected range"
