@@ -291,6 +291,13 @@ def resonance_cascade_factor(N: int, max_cf_terms: int = 200,
     cf = cf_sqrt(N, max_terms=max_cf_terms)
     convs = convergents(cf)
 
+    # Stage 1: Möbius Descent (fastest — O(|p-q|) for well-separated factors)
+    result = _mobius_descent(N, max_depth=max_descent)
+    if result is not None:
+        p, q = result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return result
+
     # Stage 2: CF-Convergent Resonance
     result = _cf_convergent_resonance(N, convs)
     if result is not None:
@@ -298,21 +305,14 @@ def resonance_cascade_factor(N: int, max_cf_terms: int = 200,
         if p * q == N and 1 < p < N and 1 < q < N:
             return result
 
-    # Stage 3: Möbius Descent
-    result = _mobius_descent(N, max_depth=max_descent)
-    if result is not None:
-        p, q = result
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return result
-
-    # Stage 4: Squaring Conductance
+    # Stage 3: Squaring Conductance
     result = _squaring_conductance(N, max_iter=max_conductance)
     if result is not None:
         p, q = result
         if p * q == N and 1 < p < N and 1 < q < N:
             return result
 
-    # Stage 5: Pollard rho (fallback for hard cases)
+    # Stage 4: Pollard rho (fallback for hard cases)
     result = _pollard_rho(N, max_iter=max_rho)
     if result is not None:
         p, q = result

@@ -165,6 +165,15 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "fibonacci")
 
+    # Strategy: Resonance Cascade (Möbius descent + CF resonance + squaring)
+    # FASTEST for well-separated factors: O(|p-q|) via Berggren tree descent
+    # Run this FIRST before all other methods
+    rc_result = resonance_cascade_factor(N)
+    if rc_result is not None:
+        p, q = rc_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "resonance_cascade")
+
     # Strategy: Lucas-PPT Factoring (Williams p+1 via PPT structure)
     # Uses Lucas sequences derived from Berggren tree branches
     # FAST: typically sub-millisecond when it succeeds
@@ -192,14 +201,7 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "periodic_word")
 
-    # Strategy: Resonance Cascade Factoring
-    # Combines CF-convergent resonance, Möbius descent, and squaring conductance
-    # SLOWER: typically 50-100ms when it succeeds
-    rc_result = resonance_cascade_factor(N)
-    if rc_result is not None:
-        p, q = rc_result
-        if p * q == N and 1 < p < N and 1 < q < N:
-            return ((min(p, q), max(p, q)), "resonance_cascade")
+    # (Resonance Cascade already tried at top of chain)
 
 
     # Strategy: Spectral Cascade (CF squaring + SL2 matrix order + QR discriminator + idempotent + near-square + walk)
