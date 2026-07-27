@@ -26,6 +26,7 @@ from .fibonacci_factor import fibonacci_gcd_factor, pisano_factor
 from .resonance_cascade import resonance_cascade_factor
 from .multi_scale_mobius import multi_scale_mobius_factor
 from .character_sum import character_sum_factor
+from .rank_apparition import rank_apparition_factor, rank_apparition_multi
 from .cf_guided_descent import cf_guided_descent_factor
 
 
@@ -100,6 +101,13 @@ def factor_with_method(N: int, time_budget_s: float = 30.0) -> tuple[tuple[int, 
         p, q = cfd_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "cf_guided_descent")
+
+    # Rank of Apparition: Fibonacci/Lucas/Mersenne smooth rank probing
+    ra_result = rank_apparition_multi(N, bounds=[100, 500, 1000, 5000])
+    if ra_result is not None:
+        p, q = ra_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "rank_apparition")
 
     # Character Sum: Jacobi symbol probing
     cs_result = character_sum_factor(N, max_trials=5000)
