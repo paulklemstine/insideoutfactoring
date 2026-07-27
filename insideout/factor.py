@@ -24,6 +24,8 @@ from .cf_guide import cf_factor_check
 from .brahmagupta import brahmagupta_fibonacci_factor, fermat_difference_of_squares
 from .fibonacci_factor import fibonacci_gcd_factor, pisano_factor
 from .resonance_cascade import resonance_cascade_factor
+from .multi_scale_mobius import multi_scale_mobius_factor
+from .character_sum import character_sum_factor
 
 
 def factor(N: int) -> tuple[int, int] | None:
@@ -40,13 +42,16 @@ def factor(N: int) -> tuple[int, int] | None:
     return result[0]
 
 
-def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
+def factor_with_method(N: int, time_budget_s: float = 30.0) -> tuple[tuple[int, int], str] | None:
     """Factor N and return the factors along with the method used.
 
     Method name is one of: "perfect_square", "cf_precheck",
     "brahmagupta", "fermat", "fibonacci", "resonance_cascade",
     "inside_out", "wavefront", "trial_division".
     """
+    import time as _time
+    _chain_start = _time.perf_counter()
+
     if N < 4:
         return None
 
@@ -87,6 +92,17 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         p, q = msm_result
         if p * q == N and 1 < p < N and 1 < q < N:
             return ((min(p, q), max(p, q)), "multi_scale_mobius")
+
+    # Character Sum: Jacobi symbol probing
+    cs_result = character_sum_factor(N, max_trials=5000)
+    if cs_result is not None:
+        p, q = cs_result
+        if p * q == N and 1 < p < N and 1 < q < N:
+            return ((min(p, q), max(p, q)), "character_sum")
+
+    # Check time budget
+    if _time.perf_counter() - _chain_start > time_budget_s:
+        return None
 
     # Strategy: Brahmagupta-Fibonacci two-square method
     # Effective for N ≡ 1 mod 4 (products of primes ≡ 1 mod 4)
@@ -134,9 +150,12 @@ def factor_with_method(N: int) -> tuple[tuple[int, int], str] | None:
         if p * q == N and p > 1 and q > 1:
             return ((min(p, q), max(p, q)), "wavefront")
 
-    # Fallback: Full trial division
+    # Fallback: Full trial division (with time check)
+    import signal
     limit = isqrt(N) + 1
-    for p in range(3, limit, 2):
+    # Only trial divide up to a reasonable limit for the time budget
+    trial_limit = min(limit, 10_000_000)  # Cap at 10M iterations
+    for p in range(3, trial_limit, 2):
         if N % p == 0:
             return ((p, N // p), "trial_division")
 
